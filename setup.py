@@ -9,6 +9,6 @@ setuptools.setup(
     extras_require={
         "test": ["pytest>=5.0,<60", "black>=20.8b1,<21"],
     },
-    version="0.1.0",
+    version="0.0.0",
     author="Colorful Scoop",
 )

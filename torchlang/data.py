@@ -24,9 +24,9 @@ class BlockDataset(torch.utils.data.IterableDataset):
         )
 
     @classmethod
-    def from_file(cls, filepath, tokenizer, block_size):
+    def from_file(cls, filename, tokenizer, block_size):
         return cls(
-            generator=lambda: (line.strip("\n") for line in open(filepath)),
+            generator=lambda: (line.strip("\n") for line in open(filename)),
             tokenizer=tokenizer,
             block_size=block_size
         )
