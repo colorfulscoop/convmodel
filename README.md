@@ -2,11 +2,13 @@
 
 ## Install
 
-1)
-Install Python >= 3.6 first.
+First, install Python >= 3.6 first.
 
-2)
-Then install PyTorch >= 1.8 corresponding your environment.
+Then install PyTorch >= 1.8. Please refer to [official document](https://pytorch.org/get-started/locally/)
+to find out correct installation for your environment.
 
-3)
-Finally, install torchlang
+Finally, install torchlang.
+
+```sh
+pip install git+https://github.com/colorfulscoop/torchlang
+```

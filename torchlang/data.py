@@ -2,15 +2,15 @@ import torch
 
 
 class BlockDataset(torch.utils.data.IterableDataset):
-    def __init__(self, tokenizer, generator, block_size, drop_last=True):
+    def __init__(self, generator, tokenizer, block_size, drop_last=True):
         super().__init__()
-        self._block_size = block_size
         self._tokenizer = tokenizer
+        self._block_size = block_size
         self._generator = generator
         self._drop_last = drop_last
 
     @classmethod
-    def from_texts(cls, tokenizer, texts, block_size):
+    def from_texts(cls, texts, tokenizer, block_size):
         """
         Args:
             tokenizer (transformers.AutoTokenizer)
@@ -18,16 +18,16 @@ class BlockDataset(torch.utils.data.IterableDataset):
             block_size (int)
         """
         return cls(
-            tokenizer=tokenizer,
             generator=lambda: texts,
+            tokenizer=tokenizer,
             block_size=block_size
         )
 
     @classmethod
-    def from_file(cls, tokenizer, filepath, block_size):
+    def from_file(cls, filepath, tokenizer, block_size):
         return cls(
-            tokenizer=tokenizer,
             generator=lambda: (line.strip("\n") for line in open(filepath)),
+            tokenizer=tokenizer,
             block_size=block_size
         )
 

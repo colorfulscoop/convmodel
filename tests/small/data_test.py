@@ -15,8 +15,8 @@ class MockTokenizer:
 def test_BlockDataset():
     tokenizer = MockTokenizer()
     dataset = BlockDataset(
-        tokenizer=tokenizer,
         generator=lambda: ["Hello", "World"],
+        tokenizer=tokenizer,
         block_size=4,
         drop_last=True
     )
@@ -32,8 +32,8 @@ def test_BlockDataset():
 def test_BlockDataset_keep_last():
     tokenizer = MockTokenizer()
     dataset = BlockDataset(
-        tokenizer=tokenizer,
         generator=lambda: ["Hello", "World"],
+        tokenizer=tokenizer,
         block_size=4,
         drop_last=False
     )
