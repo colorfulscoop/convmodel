@@ -1,0 +1,20 @@
+name: unittest
+on: [push]
+jobs:
+  test-small:
+    runs-on: ubuntu-18.04
+    container:
+      image: python:3.6.13-slim-buster
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install .[test] "torch>=1.8,<1.9"
+      - name: Run small size tests
+        run: |
+          pytest -v tests/small
+      # - name: Run medium size tests
+      #   run: |
+      #     pytest -v tests/medium
+      # - name: Check code style
+      #   run: black --check tfchat tests
