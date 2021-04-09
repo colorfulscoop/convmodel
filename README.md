@@ -1,6 +1,6 @@
 # torchlang
 
-![](https://github.com/colorfulscoop/tfdlg/workflows/torchlang/badge.svg)
+![](https://github.com/colorfulscoop/torchlang/workflows/unittest/badge.svg)
 
 **torchlang** provides PyTorch features to support your language modeling 😉.
 
