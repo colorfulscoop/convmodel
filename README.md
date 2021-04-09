@@ -41,6 +41,11 @@ Please prepare your text data in advance. This tutorial uses this markdown file 
 >>> dataset = BlockDataset.from_file(filename="README.md", tokenizer=tokenizer, block_size=8)
 >>> next(iter(dataset))
 {'input_ids': [2, 28034, 17204, 0, 58, 16151, 5450, 1378], 'labels': [28034, 17204, 0, 58, 16151, 5450, 1378, 12567]}
+```
+
+DataLoader can be initialized with `BlockDataset.collate_fn`.
+
+```
 >>> data_loader = torch.utils.data.DataLoader(dataset, collate_fn=BlockDataset.collate_fn)
 >>> next(iter(data_loader))
 {'input_ids': tensor([[    2, 28034, 17204,     0,    58, 16151,  5450,  1378]]), 'labels': tensor([[28034, 17204,     0,    58, 16151,  5450,  1378, 12567]])}
