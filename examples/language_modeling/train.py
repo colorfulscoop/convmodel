@@ -74,6 +74,7 @@ def main(
     batch_size=2, prefetch_factor=10, num_workers=1, shuffle_buffer_size=1000,
     lr=1e-4, num_warmup_steps=0, num_training_steps=None,
     # optoins for trainer
+    ds_config: str=None,
     **train_options
 ):
     # Set seed
@@ -144,6 +145,11 @@ def main(
     ]
     if "gpus" in train_options:
         callbacks.append(pl.callbacks.GPUStatsMonitor())
+
+    # Setup plugins
+    plugins = []
+    if ds_config:
+        plugins.append(DeepSpeedPlugin(config=ds_config))
 
     # Trainer
     trainer = pl.Trainer(
