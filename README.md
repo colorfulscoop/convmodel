@@ -6,7 +6,7 @@
 
 ## Install
 
-First, install Python >= 3.6 first.
+First, install Python >= 3.8 first.
 
 Then install PyTorch >= 1.8. Please refer to [official document](https://pytorch.org/get-started/locally/)
 to find out correct installation for your environment.

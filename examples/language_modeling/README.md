@@ -41,18 +41,25 @@ Finally, check your DeepSpeed status.
 $ ds_report
 ```
 
-## Execution
+## Examples of Training
+
+Train 4 epochs with batch size 2
 
 ```sh
-$ python3 train.py --tokenizer_model=colorfulscoop/gpt2-small-ja --save_model_dir=model --train_file=data/train.txt --valid_file=data/valid.txt --gpus=1 --precision=16 --lr=1e-4 --seed=1000 --val_check_interval=100000 --max_steps=1000000
+$ python3 train.py --tokenizer_model=colorfulscoop/gpt2-small-ja --save_model_dir=model --train_file=data/train.txt --valid_file=data/valid.txt --gpus=1 --precision=16 --lr=1e-4 --seed=1000 --max_epochs=4 --batch_size 2
 ```
 
-Enable scheduler with `--num_training_steps` option
+Train 4 epochs with updating parameter in every 32 samples (Each batch has 2 samples. Therefore parameters need to be updated after forwarding 16 times)
 
 ```sh
-$ python3 train.py --tokenizer_model=colorfulscoop/gpt2-small-ja --save_model_dir=model-scheduler --train_file=data/train.txt --valid_file=data/valid.txt --gpus=1 --precision=16 --lr=1e-4 --seed=1000 --val_check_interval=100000 --max_steps=1000000 --num_training_steps=1000000
+$ python3 train.py --tokenizer_model=colorfulscoop/gpt2-small-ja --save_model_dir=model --train_file=data/train.txt --valid_file=data/valid.txt --gpus=1 --precision=16 --lr=1e-4 --seed=1000 --max_epochs=4 --batch_size 2 --accumulate_grad_batches 16
 ```
 
+Scheduler can be enabled with with `--num_training_steps` option
+
+```sh
+$ python3 train.py --tokenizer_model=colorfulscoop/gpt2-small-ja --save_model_dir=model --train_file=data/train.txt --valid_file=data/valid.txt --gpus=1 --precision=16 --lr=1e-4 --seed=1000 --max_epochs=4 --batch_size 2 --accumulate_grad_batches 16 --num_training_steps 1000000
+```
 
 ## Check log
 
