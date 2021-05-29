@@ -26,6 +26,7 @@ $ pip3 install torch==1.8.1+cu111 -f https://download.pytorch.org/whl/torch_stab
 Then install packages.
 
 ```sh
+$ pip3 install git+https://github.com/colorfulscoop/torchlang
 $ pip3 install -r requirements.txt
 ```
 
