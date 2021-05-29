@@ -26,7 +26,7 @@ $ pip3 install torch==1.8.1+cu111 -f https://download.pytorch.org/whl/torch_stab
 Then install packages.
 
 ```sh
-$ pip3 install transformers==4.4.2 sentencepiece==0.1.95 pytorch-lightning==1.2.7 fire==0.4.0 git+https://github.com/colorfulscoop/torchlang
+$ pip3 install -r requirements.txt
 ```
 
 ### DeepSpeed
@@ -66,4 +66,6 @@ $ python3 train.py --tokenizer_model=colorfulscoop/gpt2-small-ja --save_model_di
 
 ## Check log
 
+```sh
 docker container run -p 6006:6006 -v $(pwd):/work -w /work --rm -it tensorflow/tensorflow:2.4.1-gpu tensorboard --logdir lightning_logs --host 0.0.0.0
+```
