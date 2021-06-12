@@ -1,4 +1,4 @@
-from torchlang.data import BlockDataset
+from convmodel.data import BlockDataset
 
 
 class MockTokenizer:

@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 import torch
 import transformers
-from torchlang.data import BlockDataset
+from convmodel.data import BlockDataset
 
 
 def forward(model, pad_token_id, src, tgt):

@@ -2,7 +2,7 @@ import setuptools
 
 
 setuptools.setup(
-    name="torchlang",
+    name="convmodel",
     packages=setuptools.find_packages(),
     install_requires=[
     ],
