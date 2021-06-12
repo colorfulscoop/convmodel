@@ -8,6 +8,7 @@ from convmodel.data import BlockDataset
 def main(
     checkpoint, model, test_file,
     batch_size=2, prefetch_factor=10, num_workers=1,
+    **train_options,
 ):
     config = transformers.AutoConfig.from_pretrained(model)
     tokenizer = transformers.AutoTokenizer.from_pretrained(model)
@@ -28,7 +29,7 @@ def main(
 
     # pl_model = PLModel(model=model, config=config, lr=0, num_warmup_steps=0, num_training_steps=0)
     pl_model = PLModel.load_from_checkpoint(checkpoint, config=config, lr=0, num_warmup_steps=0, num_training_steps=0)
-    trainer = pl.Trainer()
+    trainer = pl.Trainer(**train_options)
     trainer.test(model=pl_model, test_dataloaders=test_loader)
 
 
