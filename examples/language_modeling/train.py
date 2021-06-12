@@ -2,6 +2,7 @@ import pytorch_lightning as pl
 import torch
 import transformers
 from convmodel.data import BlockDataset
+import numpy as np
 
 
 def forward(model, pad_token_id, src, tgt):
@@ -41,6 +42,21 @@ class PLModel(pl.LightningModule):
     def validation_epoch_end(self, validation_step_outputs):
         val_loss = sum(validation_step_outputs) / len(validation_step_outputs)
         self.log("val_loss", val_loss)
+
+    def test_step(self, batch, batch_idx):
+        """
+        https://pytorch-lightning.readthedocs.io/en/stable/common/test_set.html?highlight=test#test-after-fit
+        """
+        src, tgt = batch["input_ids"], batch["labels"]
+        loss = forward(self.model, self._config.pad_token_id, src, tgt)
+        return loss
+
+    def test_epoch_end(self, test_step_outputs):
+        test_loss = sum(test_step_outputs) / len(test_step_outputs)
+        self.log("test_loss", test_loss)
+
+        test_ppl = np.exp(test_loss)
+        self.log("test_ppl", test_ppl)
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self._lr)
