@@ -2,7 +2,6 @@ import pytorch_lightning as pl
 import torch
 import transformers
 from convmodel.data import BlockDataset
-import numpy as np
 
 
 def forward(model, pad_token_id, src, tgt):
@@ -55,7 +54,7 @@ class PLModel(pl.LightningModule):
         test_loss = sum(test_step_outputs) / len(test_step_outputs)
         self.log("test_loss", test_loss)
 
-        test_ppl = np.exp(test_loss)
+        test_ppl = torch.exp(test_loss)
         self.log("test_ppl", test_ppl)
 
     def configure_optimizers(self):
