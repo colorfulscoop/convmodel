@@ -1,12 +1,14 @@
-# torchlang
+# convmodel
 
-![](https://github.com/colorfulscoop/torchlang/workflows/unittest/badge.svg)
+![](https://github.com/colorfulscoop/convmodel/workflows/unittest/badge.svg)
 
-**torchlang** provides PyTorch features to support your language modeling 😉.
+**convmodel** provides PyTorch features to support your language modeling 😉.
 
 ## Install
 
 First, install Python >= 3.8 first.
+
+### Install PyTorch
 
 Then install PyTorch >= 1.8,<1.9. Please refer to [official document](https://pytorch.org/get-started/locally/)
 to find out correct installation for your environment.
@@ -26,8 +28,7 @@ $ pip install pytorch==1.8.1
 <details>
 <summary>Example to install in Docker container with GPU</summary>
 
-Assumption
-* CUDA 11.1 .
+Assume that CUDA 11.1 is installed in your environment.
 
 ```sh
 $ docker container run --gpus all --ipc=host --rm -it -v $(pwd):/work -w /work nvidia/cuda:11.1-devel-ubuntu20.04 bash
@@ -48,11 +49,12 @@ $ pip3 install torch==1.8.1+cu111 -f https://download.pytorch.org/whl/torch_stab
 ```
 </details>
 
+### Install convmodel
 
-Finally, install torchlang.
+Finally, install convmodel:
 
 ```sh
-$ pip install git+https://github.com/colorfulscoop/torchlang
+$ pip install git+https://github.com/colorfulscoop/convmodel
 ```
 
 ## Tutorial
@@ -80,7 +82,7 @@ To create `BlockDataset`, prepare a tokenizer first.
 Then initialize `BlockDataset` with the tokenizer and your text data.
 
 ```py
->>> from torchlang.data import BlockDataset
+>>> from convmodel.data import BlockDataset
 >>> dataset = BlockDataset.from_file(filename="README.md", tokenizer=tokenizer, block_size=8)
 >>> next(iter(dataset))
 {'input_ids': [2, 28034, 17204, 0, 58, 16151, 5450, 1378], 'labels': [28034, 17204, 0, 58, 16151, 5450, 1378, 12567]}
