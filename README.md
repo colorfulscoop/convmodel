@@ -57,7 +57,18 @@ Finally, install convmodel:
 $ pip install git+https://github.com/colorfulscoop/convmodel
 ```
 
-## Tutorial
+## PyTorch Lightning modules
+
+convmodel provides [Lightning Modules](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html) to train with [LightningCLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html).
+
+Current available modules are under `trainer` directory.
+
+| Name | Path | Description |
+| --- | --- | --- |
+| PLGPT2LMHeadModel | ./trainer/gpt2_lm/ | Train language model with [transformers' GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html#gpt2lmheadmodel) |
+
+
+## Tutorial as Library
 
 This tutorial uses a tokenizer from Hugging Face's [transformers](https://github.com/huggingface/transformers) package.
 Therefore install the package before running codes.
