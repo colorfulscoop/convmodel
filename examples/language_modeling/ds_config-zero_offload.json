@@ -1,8 +1,0 @@
-{
-  "zero_optimization": {
-    "stage": 3,
-    "cpu_offload": true,
-    "contiguous_gradients": true,
-    "overlap_comm": true
-  }
-}
