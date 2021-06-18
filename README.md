@@ -2,7 +2,7 @@
 
 ![](https://github.com/colorfulscoop/convmodel/workflows/unittest/badge.svg)
 
-**convmodel** provides PyTorch features to support your language modeling 😉.
+**convmodel** provides features to support your Conversational AI models 😉.
 
 ## Install
 
