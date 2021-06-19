@@ -22,7 +22,6 @@ If you do not have tokenizer, use `train_tokenizer.py` before training model to 
 
 Training script uses [PyTorch Lightning CLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html).
 
-
 First, create your config file.
 
 ```sh
@@ -30,15 +29,34 @@ $ python trainer.py --print_config > default_config.yaml
 ```
 
 Second, modify the default_config.yaml file to set up your parameters for training.
-Following parameters are recommended to set up.
+Following parameters are some of them to recommend to set up.
 
-The default parameters for GPT2 is for small model. You can specify `model.block_size`, `model.n_layer`, `model.n_head`, `model.n_embd` parameters to change the network size.
+**For trainer parameters:**
 
 | params | what to set | example |
 | --- | --- | --- |
 | trainer.seed_everything | Set an int value for reproducibility | 1000 |
 | trainer.max_epochs | Set the number of epochs | 10 |
 | trainer.deterministic | Set true to ensure reproducibility while training on GPU | true |
+| [trainer.precision](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#accumulate-gradients) | Set 16 for 16-bit training if while training on GPU | 16 |
+| 
+| [trainer.accumulate_grad_batches](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#accumulate-gradients) | Set the number of batches to calculate gradient for updating parameters | 16 |
+| 
+| [trainer.gradient_clip_val](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#gradient-clipping) | Set a value to clip gradient | 1 |
+
+Following setting might be useful when you need to monitor values in callbacks:
+
+```yaml
+trainer:
+  callbacks:
+    - class_path: pytorch_lightning.callbacks.LearningRateMonitor
+    - class_path: pytorch_lightning.callbacks.GPUStatsMonitor
+```
+
+**For model parameters:**
+
+The default parameters for GPT2 is for small model. You can specify `model.block_size`, `model.n_layer`, `model.n_head`, `model.n_embd` parameters to change the network size.
+
 | model.tokenizer_model | Set GPT2 tokenizer model on [Hugging Face Model Hub](https://huggingface.co/models) | colorfulscoop/gpt2-small-ja |
 | model.train_file | Set text file for train your language model | data/train.txt |
 | model.valid_file | Set text file for validate your language model | data/valid.txt |
