@@ -1,4 +1,4 @@
-# Language Modeling
+# Training GPT2 Language Model
 
 This directory contains a training script for language models.
 This script utilizes [Hugging Face transformers](https://github.com/huggingface/transformers) for language models and [PyTorch lightning](https://github.com/PyTorchLightning/pytorch-lightning) for training models.
