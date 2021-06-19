@@ -18,7 +18,7 @@ $ pip3 install -r requirements.txt
 
 If you do not have any tokenizers, use `train_tokenizer.py` before training model to prepare your tokenizer model.
 
-### Training
+### Train
 
 Training script uses [PyTorch Lightning CLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html).
 
@@ -35,14 +35,14 @@ Following parameters are recommended to set up.
 
 | params | what to set | example |
 | --- | --- | --- |
-| trainer.seed_everything | Set an int value for reproducibility | 1000 |
+| trainer.seed_everything | Set an int value as a seed for reproducibility | 1000 |
 | trainer.max_epochs | Set the number of epochs | 10 |
 | trainer.deterministic | Set true to ensure reproducibility while training on GPU | true |
 | [trainer.precision](https://pytorch-lightning.readthedocs.io/en/stable/advanced/amp.html) | Set 16 for 16-bit training if while training on GPU | 16 |
 | [trainer.accumulate_grad_batches](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#accumulate-gradients) | Set the number of batches to calculate gradient for updating parameters | 16 |
 | [trainer.gradient_clip_val](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#gradient-clipping) | Set a value to clip gradient | 1 |
 
-Following setting might be useful when you need to monitor values in callbacks:
+Following setting might be useful when you need to monitor values in TensorBoard:
 
 ```yaml
 trainer:
@@ -79,11 +79,28 @@ While training, you can check log via TensorBoard
 docker container run -p 6006:6006 -v $(pwd):/work -w /work --rm -it tensorflow/tensorflow:2.4.1-gpu tensorboard --logdir lightning_logs --host 0.0.0.0
 ```
 
-### Testing
+### Test
 
 Once your model is trained, use `test.py` script to measure loss and PPL metrics.
 You can specify a config file and checkpoint which PyTorch Lightning automatically saves.
 
 ```sh
 $ python test.py --config lightning_logs/version_0/config.yaml --ckpt_path lightning_logs/version_0/checkpoints/epoch\=2-step\=8.ckpt
+```
+
+### Export model
+
+Finally `export_model.py` exports transformers' models under a directory specified by `--output_dir`.
+This script also saves your tokenizer model.
+
+```sh
+$ python export_model.py --config lightning_logs/version_0/config.yaml --ckpt_path lightning_logs/version_0/checkpoints/epoch\=2-step\=8.ckpt --output_dir model
+```
+
+This allows you to load your model from transformers library as usual way.
+
+```sh
+>>> import transformers
+>>> transformers.AutoTokenizer.from_pretrained("model")
+>>> transformers.AutoModelForCausalLM.from_pretrained("model")
 ```
