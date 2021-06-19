@@ -16,7 +16,7 @@ $ pip3 install -r requirements.txt
 
 ## Usage
 
-If you do not have tokenizer, use `train_tokenizer.py` before training model to prepare your tokenizer model.
+If you do not have any tokenizers, use `train_tokenizer.py` before training model to prepare your tokenizer model.
 
 ### Training
 
@@ -29,7 +29,7 @@ $ python trainer.py --print_config > default_config.yaml
 ```
 
 Second, modify the default_config.yaml file to set up your parameters for training.
-Following parameters are some of them to recommend to set up.
+Following parameters are recommended to set up.
 
 **For trainer parameters:**
 
@@ -38,7 +38,7 @@ Following parameters are some of them to recommend to set up.
 | trainer.seed_everything | Set an int value for reproducibility | 1000 |
 | trainer.max_epochs | Set the number of epochs | 10 |
 | trainer.deterministic | Set true to ensure reproducibility while training on GPU | true |
-| [trainer.precision](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#accumulate-gradients) | Set 16 for 16-bit training if while training on GPU | 16 |
+| [trainer.precision](https://pytorch-lightning.readthedocs.io/en/stable/advanced/amp.html) | Set 16 for 16-bit training if while training on GPU | 16 |
 | [trainer.accumulate_grad_batches](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#accumulate-gradients) | Set the number of batches to calculate gradient for updating parameters | 16 |
 | [trainer.gradient_clip_val](https://pytorch-lightning.readthedocs.io/en/stable/advanced/training_tricks.html#gradient-clipping) | Set a value to clip gradient | 1 |
 
