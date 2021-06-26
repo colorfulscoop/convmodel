@@ -15,4 +15,4 @@ except ImportError:
 
 
 from .lm_dataset import BlockDataset
-from .bert_dataset import BertForPreTrainingDataset
+from .bert_dataset import BertSample, BertForPreTrainingDataset

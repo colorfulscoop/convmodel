@@ -1,7 +1,13 @@
 import math
 import random
 import torch
-from convmodel.data import BufferedShuffleDataset
+from pydantic import BaseModel
+
+
+class BertSample(BaseModel):
+    sentence: str
+    next_sentence: str
+    next_sentence_label: int
 
 
 class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
@@ -15,7 +21,6 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         random_token_ids,
         max_seq_len,
         ignore_label=-100,
-        buffer_size=1000,
     ):
         """
         Args:
@@ -30,40 +35,20 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         self._random_token_ids = random_token_ids
         self._max_seq_len = max_seq_len
         self._ignore_label = ignore_label
-        self._buffer_size = buffer_size
 
     @classmethod
     def _get_random_token_ids_from_tokenizer(self, tokenizer):
         return [i for i in range(tokenizer.vocab_size) if i not in tokenizer.all_special_ids]
 
     @classmethod
-    def from_texts(cls, texts, tokenizer, max_seq_len, **params):
-        """
-        Args:
-            tokenizer (transformers.AutoTokenizer)
-            texts (List[str])
-            block_size (int)
-        """
-        return cls(
-            generator=lambda: texts,
-            encode_fn=tokenizer.encode,
-            sep_token_id=tokenizer.sep_token_id,
-            cls_token_id=tokenizer.cls_token_id,
-            mask_token_id=tokenizer.mask_token_id,
-            random_token_ids=self._get_random_token_ids_from_tokenizer(tokenizer=tokenizer),
-            max_seq_len=max_seq_len,
-            **params,
-        )
-
-    @classmethod
-    def from_file(cls, filename, tokenizer, max_seq_len, **params):
+    def from_jsonl(cls, filename, tokenizer, max_seq_len, **params):
         """
         Args:
             filename: the file needs to contain one sentence per each line.
             tokenizer (transformers.AutoTokenizer):
         """
         return cls(
-            generator=lambda: (line.strip("\n") for line in open(filename)),
+            generator=lambda: (BertSample.parse_raw(line) for line in open(filename)),
             encode_fn=tokenizer.encode,
             sep_token_id=tokenizer.sep_token_id,
             cls_token_id=tokenizer.cls_token_id,
@@ -129,18 +114,12 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         }
 
     def __iter__(self):
-        original_generator = self._generator()
-        shuffled_generator = BufferedShuffleDataset(self._generator(), buffer_size=self._buffer_size)
-
-        prev_text = None
-        for text, random_text in zip(original_generator, shuffled_generator):
-            if not prev_text:
-                prev_text = text
-                continue
-            next_sentence_label = random.choice([0, 1])
-            # 0 means the next sentence is continued, while 1 means the next sentence is randomly picked up
-            yield self._convert_to_sample(s1=prev_text, s2=text if next_sentence_label == 0 else random_text, next_sentence_label=next_sentence_label)
-            prev_text = text
+        for sample in self._generator():
+            yield self._convert_to_sample(
+                s1=sample.sentence,
+                s2=sample.next_sentence,
+                next_sentence_label=sample.next_sentence_label,
+            )
 
     @classmethod
     def collate_fn(cls, item):

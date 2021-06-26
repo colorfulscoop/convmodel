@@ -125,11 +125,10 @@ class PLBertForPreTraining(pl.LightningModule):
 
     def train_dataloader(self):
         # Load data
-        train_dataset = BertForPreTrainingDataset.from_file(
+        train_dataset = BertForPreTrainingDataset.from_jsonl(
             filename=self._train_file,
             tokenizer=self._tokenizer,
             max_seq_len=self._config.max_position_embeddings,
-            buffer_size=self._shuffle_buffer_size,
         )
         shuffled_train_dataset = BufferedShuffleDataset(
             train_dataset,
@@ -145,11 +144,10 @@ class PLBertForPreTraining(pl.LightningModule):
         return train_loader
 
     def valid_dataloader(self):
-        valid_dataset = BertForPreTrainingDataset.from_file(
+        valid_dataset = BertForPreTrainingDataset.from_jsonl(
             filename=self._valid_file,
             tokenizer=self._tokenizer,
             max_seq_len=self._config.max_position_embeddings,
-            buffer_size=self._shuffle_buffer_size,
         )
         valid_loader = torch.utils.data.DataLoader(
             dataset=valid_dataset,
@@ -161,11 +159,10 @@ class PLBertForPreTraining(pl.LightningModule):
         return valid_loader
 
     def test_dataloader(self):
-        test_dataset = BertForPreTrainingDataset.from_file(
+        test_dataset = BertForPreTrainingDataset.from_jsonl(
             filename=self._test_file,
             tokenizer=self._tokenizer,
             max_seq_len=self._config.max_position_embeddings,
-            buffer_size=self._shuffle_buffer_size,
         )
         test_loader = torch.utils.data.DataLoader(
             dataset=test_dataset,
