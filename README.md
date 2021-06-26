@@ -65,7 +65,8 @@ Current available modules are under `trainer` directory.
 
 | Name | Path | Description |
 | --- | --- | --- |
-| PLGPT2LMHeadModel | [trainer/gpt2_lm/](trainer/gpt2_lm) | Train language model with [transformers' GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html#gpt2lmheadmodel) |
+| PLGPT2LMHeadModel | [trainer/gpt2_lm](trainer/gpt2_lm) | Train GPT2 model for [transformers' GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html#gpt2lmheadmodel) |
+| PLGPT2LMHeadModel | [trainer/bert](trainer/bert) | Train BERT model for [transformers' BertForPreTraining](https://huggingface.co/transformers/model_doc/bert.html#transformers.BertForPreTraining) |
 
 
 ## Tutorial as Library
