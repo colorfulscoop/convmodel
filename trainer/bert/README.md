@@ -33,3 +33,9 @@ modify config.yaml
 ```sh
 python trainer.py --config config.yaml
 ```
+
+### Export transformers model
+
+```sh
+python export_model.py --config lightning_logs/version_20/config.yaml --ckpt_path lightning_logs/version_20/checkpoints/epoch\=18-step\=949.ckpt --output_dir model
+```
