@@ -4,13 +4,15 @@
 
 Prepare text data and split it into train, valid and test.
 
-## Usage
+## Train tokenizer
 
-### Train tokenizer
+```sh
+python train_tokenizer.py --train_file data/train.txt
+```
 
-### Train model
+## Train model
 
-#### Prepare dataset
+### Prepare dataset
 
  Then convert them to jsonl format for training.
 
