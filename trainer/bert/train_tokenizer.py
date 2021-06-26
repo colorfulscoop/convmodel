@@ -1,6 +1,7 @@
 from pathlib import Path
 import sentencepiece as spm
 import transformers
+from transformers.tokenization_utils import AddedToken
 
 
 def main(
@@ -10,6 +11,9 @@ def main(
     vocab_size=32000,
     input_sentence_size=1000000,
     add_dummy_prefix=False,
+    lstrip=True,
+    # rstrip should be True not to add space to right side or mask token. This goes well along with add_dummy_prefix=False
+    rstrip=True,
     # Token surfaces are aligned with AlbertTokenizer
     # https://huggingface.co/transformers/model_doc/albert.html#transformers.AlbertTokenizer
     sep_token="[SEP]",
@@ -54,7 +58,7 @@ def main(
         sep_token=sep_token,
         pad_token=pad_token,
         unk_token=unk_token,
-        mask_token=mask_token,
+        mask_token=AddedToken(mask_token, lstrip=lstrip, rstrip=rstrip)
     )
     print(len(tokenizer))
     tokenizer.save_pretrained(tf_model_dir)
