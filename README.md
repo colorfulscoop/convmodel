@@ -21,7 +21,7 @@ Some examples of installtion are as follows.
 
 ```sh
 $ docker container run -w /work -v $(pwd):/work --rm -it python:3.8.6-slim-buster bash
-$ pip install pytorch==1.8.1
+$ pip install torch==1.8.1
 ```
 </details>
 
