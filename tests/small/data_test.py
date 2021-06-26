@@ -1,22 +1,20 @@
 from convmodel.data import BlockDataset
 
 
-class MockTokenizer:
-    def encode(self, text):
-        """
-        Args:
-            text (str):
-        Returns:
-            List[int]: 
-        """
-        return list(range(len(text)))
+def encode(text):
+    """
+    Args:
+        text (str):
+    Returns:
+        List[int]: 
+    """
+    return list(range(len(text)))
 
 
 def test_BlockDataset():
-    tokenizer = MockTokenizer()
     dataset = BlockDataset(
         generator=lambda: ["Hello", "World"],
-        tokenizer=tokenizer,
+        encode_fn=encode,
         block_size=4,
         drop_last=True
     )
@@ -30,10 +28,9 @@ def test_BlockDataset():
 
 
 def test_BlockDataset_keep_last():
-    tokenizer = MockTokenizer()
     dataset = BlockDataset(
         generator=lambda: ["Hello", "World"],
-        tokenizer=tokenizer,
+        encode_fn=encode,
         block_size=4,
         drop_last=False
     )

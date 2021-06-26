@@ -2,9 +2,9 @@ import torch
 
 
 class BlockDataset(torch.utils.data.IterableDataset):
-    def __init__(self, generator, tokenizer, block_size, drop_last=True):
+    def __init__(self, generator, encode_fn, block_size, drop_last=True):
         super().__init__()
-        self._tokenizer = tokenizer
+        self._encode_fn = encode_fn
         self._block_size = block_size
         self._generator = generator
         self._drop_last = drop_last
@@ -19,7 +19,7 @@ class BlockDataset(torch.utils.data.IterableDataset):
         """
         return cls(
             generator=lambda: texts,
-            tokenizer=tokenizer,
+            tokenizer=tokenizer.encode,
             block_size=block_size
         )
 
@@ -27,7 +27,7 @@ class BlockDataset(torch.utils.data.IterableDataset):
     def from_file(cls, filename, tokenizer, block_size):
         return cls(
             generator=lambda: (line.strip("\n") for line in open(filename)),
-            tokenizer=tokenizer,
+            tokenizer=tokenizer.encode,
             block_size=block_size
         )
 
@@ -37,7 +37,7 @@ class BlockDataset(torch.utils.data.IterableDataset):
         """
         ids = []
         for text in self._generator():
-            ids.extend(self._tokenizer.encode(text))
+            ids.extend(self._encode_fn(text))
             while len(ids) >= self._block_size+1:
                 yield {"input_ids": ids[:self._block_size],
                        "labels": ids[1:self._block_size+1]}

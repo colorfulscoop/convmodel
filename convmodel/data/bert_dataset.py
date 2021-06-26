@@ -5,43 +5,79 @@ from convmodel.data import BufferedShuffleDataset
 
 
 class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
-    def __init__(self, generator, tokenizer, max_seq_len, ignored_label=-100, buffer_size=10000):
+    def __init__(
+        self,
+        generator,
+        encode_fn,
+        sep_token_id,
+        cls_token_id,
+        mask_token_id,
+        random_token_ids,
+        max_seq_len,
+        ignore_label=-100,
+        buffer_size=1000,
+    ):
         """
         Args:
             generator: `generator` yields a sentence.
         """
         super().__init__()
         self._generator = generator
-        self._tokenizer = tokenizer
+        self._encode_fn = encode_fn
+        self._sep_token_id = sep_token_id
+        self._cls_token_id = cls_token_id
+        self._mask_token_id = mask_token_id
+        self._random_token_ids = random_token_ids
         self._max_seq_len = max_seq_len
-        self._ignored_label = ignored_label
+        self._ignore_label = ignore_label
         self._buffer_size = buffer_size
 
-        self._all_normal_token_ids = [i for i in range(self._tokenizer.vocab_size) if i not in self._tokenizer.all_special_ids]
+    @classmethod
+    def _get_random_token_ids_from_tokenizer(self, tokenizer):
+        return [i for i in range(tokenizer.vocab_size) if i not in tokenizer.all_special_ids]
 
     @classmethod
-    def from_texts(cls, texts, tokenizer):
+    def from_texts(cls, texts, tokenizer, max_seq_len, **params):
+        """
+        Args:
+            tokenizer (transformers.AutoTokenizer)
+            texts (List[str])
+            block_size (int)
+        """
         return cls(
             generator=lambda: texts,
-            tokenizer=tokenizer
+            encode_fn=tokenizer.encode,
+            sep_token_id=tokenizer.sep_token_id,
+            cls_token_id=tokenizer.cls_token_id,
+            mask_token_id=tokenizer.mask_token_id,
+            random_token_ids=self._get_random_token_ids_from_tokenizer(tokenizer=tokenizer),
+            max_seq_len=max_seq_len,
+            **params,
         )
 
     @classmethod
-    def from_file(cls, filename, tokenizer):
+    def from_file(cls, filename, tokenizer, max_seq_len, **params):
         """
         Args:
             filename: the file needs to contain one sentence per each line.
+            tokenizer (transformers.AutoTokenizer):
         """
         return cls(
             generator=lambda: (line.strip("\n") for line in open(filename)),
-            tokenizer=tokenizer,
+            encode_fn=tokenizer.encode,
+            sep_token_id=tokenizer.sep_token_id,
+            cls_token_id=tokenizer.cls_token_id,
+            mask_token_id=tokenizer.mask_token_id,
+            random_token_ids=cls._get_random_token_ids_from_tokenizer(tokenizer=tokenizer),
+            max_seq_len=max_seq_len,
+            **params,
         )
 
     def _convert_to_sample(self, s1, s2, next_sentence_label):
-        s1_ids = self._tokenizer.encode(s1)
-        s2_ids = self._tokenizer.encode(s2)
+        s1_ids = self._encode_fn(s1)
+        s2_ids = self._encode_fn(s2)
 
-        ids = [self._tokenizer.cls_token_id] + s1_ids + [self._tokenizer.sep_token_id] + s2_ids + [self._tokenizer.sep_token_id]
+        ids = [self._cls_token_id] + s1_ids + [self._sep_token_id] + s2_ids + [self._sep_token_id]
         ids = ids[:self._max_seq_len]
 
         special_token_index = [0] + [1 + len(s1_ids)] + [len(ids) - 1]
@@ -67,19 +103,19 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         labels = []
         for i in range(len(ids)):
             if i in mask_index:
-                input_ids.append(self._tokenizer.mask_token_id)
+                input_ids.append(self._mask_token_id)
                 labels.append(ids[i])
             elif i in random_token_index:
-                input_ids.append(random.choice(self._all_normal_token_ids))
+                input_ids.append(random.choice(self._random_token_ids))
                 labels.append(ids[i])
             elif i in same_token_index:
                 input_ids.append(ids[i])
                 labels.append(ids[i])
             else:
                 input_ids.append(ids[i])
-                labels.append(self._ignored_label)
+                labels.append(self._ignore_label)
 
-        input_ids = input_ids + [self._tokenizer.pad_token_id] * (self._max_seq_len - len(input_ids))
+        input_ids = input_ids + [0] * (self._max_seq_len - len(input_ids))
         labels = labels + [-100] * (self._max_seq_len - len(labels))
         attention_mask = [1] * len(ids) + [0] * (self._max_seq_len - len(ids))
         token_type_ids = [0] * (len(s1_ids) + 2) + [1] * (len(s2_ids) + 1) + [0] * (self._max_seq_len - len(ids))
