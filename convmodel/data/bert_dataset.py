@@ -93,11 +93,11 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
 
         # Random sort
         shuffled_index = random.sample(normal_token_index, k=math.ceil(len(normal_token_index)*0.15))
-        ten_perc = math.ceil(len(shuffled_index) * 0.1)
+        ilen = len(shuffled_index)
 
-        mask_index = set(shuffled_index[:ten_perc*8])
-        random_token_index = set(shuffled_index[ten_perc*8:ten_perc*9])
-        same_token_index = set(shuffled_index[ten_perc*9:])
+        mask_index = set(shuffled_index[:math.ceil(ilen*0.8)])
+        random_token_index = set(shuffled_index[math.ceil(ilen*0.8):math.ceil(ilen*0.9)])
+        same_token_index = set(shuffled_index[math.ceil(ilen*0.9):])
 
         input_ids = []
         labels = []
@@ -139,7 +139,7 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
                 continue
             next_sentence_label = random.choice([0, 1])
             # 0 means the next sentence is continued, while 1 means the next sentence is randomly picked up
-            yield self._convert_to_sample(s1=text, s2=prev_text if next_sentence_label == 0 else random_text, next_sentence_label=next_sentence_label)
+            yield self._convert_to_sample(s1=prev_text, s2=text if next_sentence_label == 0 else random_text, next_sentence_label=next_sentence_label)
             prev_text = text
 
     @classmethod
