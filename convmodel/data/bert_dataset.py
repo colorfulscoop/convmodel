@@ -62,8 +62,12 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         s1_ids = self._encode_fn(s1)
         s2_ids = self._encode_fn(s2)
 
+        # Limit length
+        if len(s1_ids) + len(s2_ids) + 3 > self._max_seq_len:
+            s1_ids = s1_ids[:max(0, self._max_seq_len-3)]
+            s2_ids = s1_ids[:max(0, self._max_seq_len-len(s1_ids)-3)]
+
         ids = [self._cls_token_id] + s1_ids + [self._sep_token_id] + s2_ids + [self._sep_token_id]
-        ids = ids[:self._max_seq_len]
 
         special_token_index = [0] + [1 + len(s1_ids)] + [len(ids) - 1]
         normal_token_index = [i for i in range(len(ids)) if i not in special_token_index]

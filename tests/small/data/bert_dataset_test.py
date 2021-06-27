@@ -73,3 +73,25 @@ def test_BlockDataset():
     ]
     assert got == want
 
+
+def test_BlockDataset_long_sentence_no_error():
+    a = "AAAAAA"
+    b = "BBBBBBBB"
+    c = "CCCCCCCCCCCCCCCCCCCC"
+    d = "DDDDDDDDDDDDDDDDDDDD"
+    dataset = BertForPreTrainingDataset(
+        generator=lambda: [
+            BertSample(sentence=a, next_sentence=c, next_sentence_label=1),
+            BertSample(sentence=b, next_sentence=c, next_sentence_label=0),
+            BertSample(sentence=c, next_sentence=d, next_sentence_label=0),
+        ],
+        encode_fn=encode,
+        sep_token_id=10000,
+        cls_token_id=10001,
+        mask_token_id=10002,
+        random_token_ids=[100, 101, 102],
+        max_seq_len=10,
+    )
+
+    # Check the following code raise no errors
+    got = list(iter(dataset))
