@@ -13,12 +13,11 @@ class PLBertForPreTraining(pl.LightningModule):
         valid_file,
         test_file,
         from_pretrained=None,
-        block_size=1024,
         # [Model config]
         # base size
-        hidden_size=768, num_hidden_layers=12, num_attention_heads=12,
+        hidden_size=768, num_hidden_layers=12, num_attention_heads=12, max_position_embeddings=512,
         # large size
-        #hidden_size=1024, num_hidden_layers=24, num_attention_heads=16,
+        #hidden_size=1024, num_hidden_layers=24, num_attention_heads=16, max_position_embeddings=512,
         # [DataLoader options]
         batch_size=2,
         prefetch_factor=10,
@@ -52,6 +51,7 @@ class PLBertForPreTraining(pl.LightningModule):
                 hidden_size=hidden_size,
                 num_hidden_layers=num_hidden_layers,
                 num_attention_heads=num_attention_heads,
+                max_position_embeddings=max_position_embeddings,
             )
             model = transformers.BertForPreTraining(config)
 
