@@ -143,7 +143,7 @@ class PLBertForPreTraining(pl.LightningModule):
         )
         return train_loader
 
-    def valid_dataloader(self):
+    def val_dataloader(self):
         valid_dataset = BertForPreTrainingDataset.from_jsonl(
             filename=self._valid_file,
             tokenizer=self._tokenizer,

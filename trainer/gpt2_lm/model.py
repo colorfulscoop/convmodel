@@ -146,7 +146,7 @@ class PLGPT2LMHeadModel(pl.LightningModule):
         )
         return train_loader
 
-    def valid_dataloader(self):
+    def val_dataloader(self):
         valid_dataset = BlockDataset.from_file(
             block_size=self._config.n_ctx,
             tokenizer=self._tokenizer,
