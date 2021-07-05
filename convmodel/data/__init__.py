@@ -8,7 +8,7 @@ This import should be done prior to other import
 """
 try:
     # This import will succeed with PyTroch >= 1.9
-    from torch.utils.data.datapipes.iter import Shuffle as BufferdShuffleDataset
+    from torch.utils.data.datapipes.iter import Shuffle as BufferedShuffleDataset
 except ImportError:
     # This import will succeed with PyTroch == 1.8
     from torch.utils.data import BufferedShuffleDataset
@@ -16,3 +16,4 @@ except ImportError:
 
 from .lm_dataset import BlockDataset
 from .bert_dataset import BertSample, BertForPreTrainingDataset
+from .jsonl_dataset import JsonLinesDataset
