@@ -41,6 +41,23 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         return [i for i in range(tokenizer.vocab_size) if i not in tokenizer.all_special_ids]
 
     @classmethod
+    def from_generator(cls, generator_fn, tokenizer, max_seq_len, **params):
+        """
+        Args:
+            tokenizer (transformers.AutoTokenizer):
+        """
+        return cls(
+            generator=lambda: generator_fn(),
+            encode_fn=tokenizer.encode,
+            sep_token_id=tokenizer.sep_token_id,
+            cls_token_id=tokenizer.cls_token_id,
+            mask_token_id=tokenizer.mask_token_id,
+            random_token_ids=cls._get_random_token_ids_from_tokenizer(tokenizer=tokenizer),
+            max_seq_len=max_seq_len,
+            **params,
+        )
+
+    @classmethod
     def from_jsonl(cls, filename, tokenizer, max_seq_len, **params):
         """
         Args:
