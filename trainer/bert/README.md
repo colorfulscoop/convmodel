@@ -17,9 +17,9 @@ python train_tokenizer.py --train_file data/train.txt
  Then convert them to jsonl format for training.
 
 ```sh
-python prepare_train_data.py --filename data/train.txt  --buffer_size 10000 --tokenizer_model output/model --max_seq_len 512 --seed 1000 >data/train.jsonl
-python prepare_train_data.py --filename data/valid.txt  --buffer_size 10000 --tokenizer_model output/model --max_seq_len 512 --seed 1000 >data/valid.jsonl
-python prepare_train_data.py --filename data/test.txt  --buffer_size 10000 --tokenizer_model output/model --max_seq_len 512 --seed 1000 >data/test.jsonl
+python prepare_train_data.py --filename data/train.txt  --buffer_size 10000 --tokenizer_model output/model --max_seq_len 512 --seed 1000 --get_raw False >data/train.jsonl
+python prepare_train_data.py --filename data/valid.txt  --buffer_size 10000 --tokenizer_model output/model --max_seq_len 512 --seed 1000 --get_raw True >data/valid.jsonl
+python prepare_train_data.py --filename data/test.txt  --buffer_size 10000 --tokenizer_model output/model --max_seq_len 512 --seed 1000 --get_raw True >data/test.jsonl
 ```
 
 #### Train model

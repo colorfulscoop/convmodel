@@ -130,7 +130,11 @@ class PLBertForPreTraining(pl.LightningModule):
 
     def train_dataloader(self):
         # Load data
-        train_dataset = JsonLinesDataset.from_file(self._train_file)
+        train_dataset = BertForPreTrainingDataset.from_jsonl(
+            filename=self._train_file,
+            tokenizer=self._tokenizer,
+            max_seq_len=self._config.max_position_embeddings,
+        )
         shuffled_train_dataset = BufferedShuffleDataset(
             train_dataset,
             buffer_size=self._shuffle_buffer_size,

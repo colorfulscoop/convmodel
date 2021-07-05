@@ -30,19 +30,23 @@ def generate_sample(filename, buffer_size):
         prev_sentence = sentence
 
 
-def main(filename, buffer_size, tokenizer_model, max_seq_len, seed, use_fast=False):
+def main(filename, buffer_size, tokenizer_model, max_seq_len, seed, get_raw, use_fast=False):
     random.seed(seed)
     # use_fast = False と True で挙動が違う
     # False が期待した挙動なので、現状Falseを使う
     tokenizer = transformers.AutoTokenizer.from_pretrained(tokenizer_model, use_fast=use_fast)
-    dataset = BertForPreTrainingDataset.from_generator(
-        generator_fn=lambda: generate_sample(filename, buffer_size),
-        tokenizer=tokenizer,
-        max_seq_len=max_seq_len,
-    )
+    if not get_raw:
+        for item in generate_sample(filename, buffer_size):
+            print(json.dumps(item.dict(), ensure_ascii=False))
+    else:
+        dataset = BertForPreTrainingDataset.from_generator(
+            generator_fn=lambda: generate_sample(filename, buffer_size),
+            tokenizer=tokenizer,
+            max_seq_len=max_seq_len,
+        )
 
-    for item in dataset:
-        print(json.dumps(item, ensure_ascii=False))
+        for item in dataset:
+            print(json.dumps(item, ensure_ascii=False))
 
 
 if __name__ == "__main__":
