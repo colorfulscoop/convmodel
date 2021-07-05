@@ -3,6 +3,8 @@ import torch
 import transformers
 from convmodel.data import BertForPreTrainingDataset
 from convmodel.data import BufferedShuffleDataset
+from convmodel.data import JsonLinesDataset
+import json
 
 
 class PLBertForPreTraining(pl.LightningModule):
@@ -123,13 +125,12 @@ class PLBertForPreTraining(pl.LightningModule):
         test_loss = sum(test_step_outputs) / len(test_step_outputs)
         self.log("test_loss", test_loss)
 
+    def _load_dataset(self, filename):
+        return (json.loads(line) for line in filename)
+
     def train_dataloader(self):
         # Load data
-        train_dataset = BertForPreTrainingDataset.from_jsonl(
-            filename=self._train_file,
-            tokenizer=self._tokenizer,
-            max_seq_len=self._config.max_position_embeddings,
-        )
+        train_dataset = JsonLinesDataset.from_file(self._train_file)
         shuffled_train_dataset = BufferedShuffleDataset(
             train_dataset,
             buffer_size=self._shuffle_buffer_size,
@@ -144,11 +145,7 @@ class PLBertForPreTraining(pl.LightningModule):
         return train_loader
 
     def val_dataloader(self):
-        valid_dataset = BertForPreTrainingDataset.from_jsonl(
-            filename=self._valid_file,
-            tokenizer=self._tokenizer,
-            max_seq_len=self._config.max_position_embeddings,
-        )
+        valid_dataset = JsonLinesDataset.from_file(self._valid_file)
         valid_loader = torch.utils.data.DataLoader(
             dataset=valid_dataset,
             batch_size=self._batch_size,
@@ -159,11 +156,7 @@ class PLBertForPreTraining(pl.LightningModule):
         return valid_loader
 
     def test_dataloader(self):
-        test_dataset = BertForPreTrainingDataset.from_jsonl(
-            filename=self._test_file,
-            tokenizer=self._tokenizer,
-            max_seq_len=self._config.max_position_embeddings,
-        )
+        test_dataset = JsonLinesDataset.from_file(self._test_file)
         test_loader = torch.utils.data.DataLoader(
             dataset=test_dataset,
             batch_size=self._batch_size,
