@@ -48,7 +48,7 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         """
         return cls(
             generator=lambda: generator_fn(),
-            encode_fn=tokenizer.encode,
+            encode_fn=lambda x: tokenizer.convert_tokens_to_ids(tokenizer.tokenize(x)),
             sep_token_id=tokenizer.sep_token_id,
             cls_token_id=tokenizer.cls_token_id,
             mask_token_id=tokenizer.mask_token_id,
@@ -66,7 +66,7 @@ class BertForPreTrainingDataset(torch.utils.data.IterableDataset):
         """
         return cls(
             generator=lambda: (BertSample.parse_raw(line) for line in open(filename)),
-            encode_fn=tokenizer.encode,
+            encode_fn=lambda x: tokenizer.convert_tokens_to_ids(tokenizer.tokenize(x)),
             sep_token_id=tokenizer.sep_token_id,
             cls_token_id=tokenizer.cls_token_id,
             mask_token_id=tokenizer.mask_token_id,
