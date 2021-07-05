@@ -15,6 +15,7 @@ class PLBertForPreTraining(pl.LightningModule):
         valid_file,
         test_file,
         from_pretrained=None,
+        use_fast=False,
         # [Model config]
         # base size
         hidden_size=768, num_hidden_layers=12, num_attention_heads=12, max_position_embeddings=512,
@@ -30,7 +31,7 @@ class PLBertForPreTraining(pl.LightningModule):
         super().__init__()
 
         # Load tokenzier
-        tokenizer = transformers.AlbertTokenizer.from_pretrained(tokenizer_model)
+        tokenizer = transformers.AutoTokenizer.from_pretrained(tokenizer_model, use_fast=use_fast)
         self._tokenizer = tokenizer
 
         # Load or initialize model
