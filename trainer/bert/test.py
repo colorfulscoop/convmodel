@@ -15,9 +15,11 @@ except ImportError:
 
 def main(config, ckpt_path):
     config_yaml = yaml.load(open(config), Loader=Loader)
-    model = PLBertForPreTraining(**config_yaml["model"])
+    #model = PLBertForPreTraining(**config_yaml["model"])
+    model = PLBertForPreTraining.load_from_checkpoint(ckpt_path, **config_yaml["model"])
     trainer = pl.Trainer(**config_yaml["trainer"])
-    trainer.test(model=model, ckpt_path=ckpt_path)
+    #trainer.test(model=model, ckpt_path=ckpt_path)
+    trainer.test(model=model)
 
 
 if __name__ == "__main__":

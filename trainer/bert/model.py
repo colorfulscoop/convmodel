@@ -101,7 +101,7 @@ class PLBertForPreTraining(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss = self.forward(batch=batch)
-        self.log('train_loss', loss)
+        self.log('train_loss', loss.item())
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -113,7 +113,7 @@ class PLBertForPreTraining(pl.LightningModule):
 
     def validation_epoch_end(self, validation_step_outputs):
         val_loss = sum(validation_step_outputs) / len(validation_step_outputs)
-        self.log("val_loss", val_loss)
+        self.log("val_loss", val_loss.item())
 
     def test_step(self, batch, batch_idx):
         """
@@ -124,7 +124,7 @@ class PLBertForPreTraining(pl.LightningModule):
 
     def test_epoch_end(self, test_step_outputs):
         test_loss = sum(test_step_outputs) / len(test_step_outputs)
-        self.log("test_loss", test_loss)
+        self.log("test_loss", test_loss.item())
 
     def _load_dataset(self, filename):
         return (json.loads(line) for line in filename)
