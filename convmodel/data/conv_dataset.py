@@ -31,7 +31,7 @@ class ConversationDataset(torch.utils.data.IterableDataset):
         keys = item[0].keys()
         max_len = max(len(x["labels"]) for x in item)
         dic = {
-            key: torch.tensor([x[key] + [0] * (max_len - len(x[key])) for x in item])
+            key: torch.tensor([x[key] + [-100 if key == "labels" else 0] * (max_len - len(x[key])) for x in item])
             for key in keys
         }
         return dic
