@@ -6,6 +6,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "pydantic>=1.8,<2",
+        "transformers==4.8.2",
     ],
     extras_require={
         "test": ["pytest>=5.0,<60", "black>=20.8b1,<21"],
