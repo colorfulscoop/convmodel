@@ -14,6 +14,9 @@ class ConversationTokenizer:
         )
         return cls(tokenizer=tokenizer)
 
+    def save_pretrained(self, *args, **argv):
+        return self._tokenizer.save_pretrained(*args, **argv)
+
     def encode(self, text: str, **argv):
         assert type(text) == str, f"{text} should be a type of string"
         return self._tokenizer.encode(text, **argv)
