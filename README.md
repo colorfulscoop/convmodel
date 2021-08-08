@@ -87,8 +87,8 @@ Then ConversationModel generates words until a `<sep>` token appears.
 | input_ids | 50256 | 15496 | 50256 | 2437 | 389 | 345 | 50256 | 10248 | 5875 | 345 |
 | token_type_ids | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
 | attention_mask | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
-| ↓ | | | | | | | | | | | |
-| generated word | - | - | - | - | - | \<sep\> | Good | thank | you | \<sep\> |
+| | | | | | | | ↓ | ↓ | ↓ | ↓ |
+| generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
 ## Usage
 
