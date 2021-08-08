@@ -3,7 +3,11 @@ from typing import List
 
 
 class ConversationTokenizer:
-    def __init__(self, tokenizer):
+    def __init__(self, tokenizer, sep_token="<sep>"):
+        if tokenizer.sep_token_id is None:
+            tokenizer.sep_token = sep_token
+
+        assert tokenizer.sep_token_id is not None
         self._tokenizer = tokenizer
 
     @classmethod
