@@ -71,7 +71,7 @@ When this model gets a context `["Hello", "How are you"]' , then it is encoded a
 ```
 
 | position | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- | --- |- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 | word | \<sep\> | Hello | \<sep\> | How | are | you | \<sep\> |
 | input_ids | 50256 | 15496 | 50256 | 2437 | 389 | 345 | 50256 |
 | token_type_ids | 0 | 0 | 1 | 1 | 1 | 1 | 0 |
@@ -82,7 +82,7 @@ When this model gets a context `["Hello", "How are you"]' , then it is encoded a
 Then ConversationModel generates words until a `<sep>` token appears.
 
 | position | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | word | \<sep\> | Hello | \<sep\> | How | are | you | \<sep\> | Good | thank | you |
 | input_ids | 50256 | 15496 | 50256 | 2437 | 389 | 345 | 50256 | 10248 | 5875 | 345 |
 | token_type_ids | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
