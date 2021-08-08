@@ -18,6 +18,14 @@ class ConversationTokenizer:
         )
         return cls(tokenizer=tokenizer)
 
+    @property
+    def sep_token_id(self):
+        return self._tokenizer.sep_token_id
+
+    @property
+    def sep_token(self):
+        return self._tokenizer.sep_token
+
     def save_pretrained(self, *args, **argv):
         return self._tokenizer.save_pretrained(*args, **argv)
 

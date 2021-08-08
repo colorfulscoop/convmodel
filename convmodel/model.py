@@ -33,7 +33,11 @@ class ConversationModel:
 
         # Convert to Torch tensor
         model_input = {key: torch.tensor([val]) for key, val in model_input.items()}
-        output = self._model.generate(**model_input, **kwargs)
+        output = self._model.generate(
+            **model_input,
+            **kwargs,
+            eos_token_id=self._tokenizer.sep_token_id
+        )
 
         responses = [self._tokenizer.decode(item) for item in output[:, model_input["input_ids"].shape[-1]:]]
 

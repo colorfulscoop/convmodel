@@ -2,9 +2,28 @@ from convmodel.tokenizer import ConversationTokenizer
 
 
 class TokenizerMock:
+    def __init__(self, init_sep_token=True):
+        if init_sep_token:
+            # Emulate sep_token is defined in tokenizer
+            self._sep_token = "<sep>"
+            self._sep_token_id = 5
+        else:
+            # Emulate sep_token is not defined
+            self._sep_token = None
+            self._sep_token_id = None
+
     @property
     def sep_token_id(self):
-        return 5
+        return self._sep_token_id
+
+    @property
+    def sep_token(self):
+        return self._sep_token
+
+    @sep_token.setter
+    def sep_token(self, val):
+        self._sep_token = val
+        self._sep_token_id = 5
 
     def encode(self, text):
         encode_map = {
@@ -38,3 +57,15 @@ def test_tokenizer_call():
         'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
 
     assert got == want
+
+
+def test_tokenizer_init_sep_token_id():
+    hf_tokenizer = TokenizerMock(init_sep_token=False)
+    assert hf_tokenizer.sep_token_id is None
+
+    tokenizer = ConversationTokenizer(
+        tokenizer=TokenizerMock(init_sep_token=False)
+    )
+
+    assert tokenizer.sep_token == "<sep>"
+    assert type(tokenizer.sep_token_id) == int
