@@ -1,6 +1,7 @@
 import pytorch_lightning as pl
 import torch
 import transformers
+from convmodel import ConversationModel
 from convmodel.tokenizer import ConversationTokenizer
 from convmodel.data import ConversationDataset
 from convmodel.data import BufferedShuffleDataset
@@ -25,11 +26,10 @@ class LightningConversationModel(pl.LightningModule):
         super().__init__()
 
         # Load model
-        tokenizer = ConversationTokenizer.from_pretrained(pretrained_model_or_path)
-        model = transformers.AutoModelForCausalLM.from_pretrained(pretrained_model_or_path)
+        model = ConversationModel.from_pretrained(pretrained_model_or_path)
 
-        self.model = model
-        self._tokenizer = tokenizer
+        self.model = model.hf_model
+        self._tokenizer = model.hf_tokenizer
 
         self._train_file = train_file
         self._valid_file = valid_file

@@ -19,6 +19,10 @@ class ConversationTokenizer:
         return cls(tokenizer=tokenizer)
 
     @property
+    def hf_tokenizer(self):
+        return self._tokenizer
+
+    @property
     def sep_token_id(self):
         return self._tokenizer.sep_token_id
 
