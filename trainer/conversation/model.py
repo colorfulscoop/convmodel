@@ -17,8 +17,8 @@ class PLConversationModel(pl.LightningModule):
         batch_size=2,
         prefetch_factor=10,
         num_workers=1,
-        shuffle_buffer_size=1000,
-        lr=5e-5,
+        shuffle_buffer_size=10000,
+        lr=1.0e-4,
         num_warmup_steps=10000,
         num_training_steps=None,
     ):
