@@ -28,7 +28,7 @@ class LightningConversationModel(pl.LightningModule):
         # Load model
         model = ConversationModel.from_pretrained(pretrained_model_or_path)
 
-        self.model = model.hf_model
+        self.model = model
 
         self._hf_model = model.hf_model
         self._tokenizer = model.tokenizer

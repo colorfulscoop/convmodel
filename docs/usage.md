@@ -32,7 +32,7 @@ $ docker container run -p 6006:6006 -v $(pwd):/work -w /work --rm -it tensorflow
 After training, `export_model` allows you to export ConversationModel from a Lightning checkpoint.
 
 ```sh
-python -m convmodel export_model --config version_0/config.yaml --ckpt_path version_0/checkpoints/epoch\=0-step\=19999.ckpt  --output_dir model
+$ python3 -m convmodel export_model --config lightning_logs/version_0/config.yaml --ckpt_path lightning_logs/version_0/checkpoints/epoch\=0-step\=49999.ckpt  --output_dir model
 ```
 
 ### Test model
