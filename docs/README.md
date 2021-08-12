@@ -9,5 +9,5 @@
 **Table of contents**
 
 * [Install](./install.md)
-* [Model Architecture Overview][./model_archtecture_overview.md]
-* [Usage][./usage.md]
+* [Model Architecture Overview](./model_archtecture_overview.md)
+* [Usage](./usage.md)
