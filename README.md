@@ -2,7 +2,11 @@
 
 ![](https://github.com/colorfulscoop/convmodel/workflows/unittest/badge.svg)
 
-**convmodel** provides features to support your Conversational AI models 😉.
+**convmodel** provides a conversation model based on GPT-2 provided by [transformers](https://github.com/huggingface/transformers) :wink:.
+
+:sparkles: Features :sparkles:
+* convmodel utilizes GPT2 model to generate response.
+* convmodel handles multi-turn conversation.
 
 ## Install
 
@@ -10,7 +14,7 @@ First, install Python >= 3.8 first.
 
 ### Install PyTorch
 
-Then install PyTorch >= 1.8,<1.9. Please refer to [official document](https://pytorch.org/get-started/locally/)
+Then install PyTorch >= 1.8,<=1.9. Please refer to [official document](https://pytorch.org/get-started/locally/)
 to find out correct installation for your environment.
 
 Some examples of installtion are as follows.
@@ -57,65 +61,96 @@ Finally, install convmodel:
 $ pip install git+https://github.com/colorfulscoop/convmodel
 ```
 
-## PyTorch Lightning modules
-
-convmodel provides [Lightning Modules](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html) to train with [LightningCLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html).
-
-Current available modules are under `trainer` directory.
-
-| Name | Path | Description |
-| --- | --- | --- |
-| PLGPT2LMHeadModel | [trainer/gpt2_lm](trainer/gpt2_lm) | Train GPT2 model for [transformers' GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html#gpt2lmheadmodel) |
-| PLGPT2LMHeadModel | [trainer/bert](trainer/bert) | Train BERT model for [transformers' BertForPreTraining](https://huggingface.co/transformers/model_doc/bert.html#transformers.BertForPreTraining) |
-
-
-## Tutorial as Library
-
-This tutorial uses a tokenizer from Hugging Face's [transformers](https://github.com/huggingface/transformers) package.
-Therefore install the package before running codes.
+If you want to train your model as well, specify `[train]` option to install dependencies.
 
 ```sh
-$ pip install transformers
+$ pip install git+https://github.com/colorfulscoop/convmodel[train]
 ```
 
-Please prepare your text data in advance. This tutorial uses this markdown file as a text data.
+## Model Architecture Overview
 
-### Dataset
+convmodel provides `ConversationModel` class.
+ConversationModel class adopts [GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html?highlight=gpt2lmheadmodel#transformers.GPT2LMHeadModel) architecture provided by transformers library.
 
-`BlockDataset` enables you to create PyTorch Dataset and DataLoader for modeling languages.
 
-To create `BlockDataset`, prepare a tokenizer first.
+Although, in a initializer of `ConversationModel`, `ConversationTokenizer` is automatically initialized, let us first directly initialize `ConversationTokenizer` to see it encodes a given context to input to the model.
+Assume that `ConversationTokenizer` gets a context `["Hello", "How are you"]` . Then `ConversationTokenizer` encodes it as follows.
 
 ```py
->>> import transformers
->>> tokenizer = transformers.AutoTokenizer.from_pretrained("gpt2")
+>>> from convmodel import ConversationTokenizer
+>>> tokenizer = ConversationTokenizer.from_pretrained("gpt2")
+>>> context = ["Hello", "How are you"]
+>>> tokenizer(context)
+{'input_ids': [50256, 15496, 50256, 2437, 389, 345, 50256], 'token_type_ids': [0, 0, 1, 1, 1, 1, 0], 'attention_mask': [1, 1, 1, 1, 1, 1, 1]}
 ```
 
-Then initialize `BlockDataset` with the tokenizer and your text data.
+| position | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| word | \<sep\> | Hello | \<sep\> | How | are | you | \<sep\> |
+| input_ids | 50256 | 15496 | 50256 | 2437 | 389 | 345 | 50256 |
+| token_type_ids | 0 | 0 | 1 | 1 | 1 | 1 | 0 |
+| attention_mask | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+
+**Note:** if a tokenizer does not assign a value to `sep_token_id`, it is automatically set with `sep_token` of `<sep>`.
+
+When initializing `ConversationModel`, `ConversationTokenizer` is automatically initialized inside.
+`ConversationModel` implements `generate` method. In `generate` method, an input context is first encoded as above.
+Then the encoded tensors are forwardded by the model to predict following tokens until `<sep>` token appears
+
+**Note:** Here we assume that `model` directory contains a trained conversation model which was fine-tuned from gpt2 model. We will see how to train our own conversation model later.
 
 ```py
->>> from convmodel.data import BlockDataset
->>> dataset = BlockDataset.from_file(filename="README.md", tokenizer=tokenizer, block_size=8)
->>> next(iter(dataset))
-{'input_ids': [2, 28034, 17204, 0, 58, 16151, 5450, 1378], 'labels': [28034, 17204, 0, 58, 16151, 5450, 1378, 12567]}
+>>> from convmodel import ConversationModel
+>>> model = ConversationModel.from_pretrained("model")
+>>> model.generate(context, do_sample=True, top_p=0.95)
 ```
 
-DataLoader can be initialized with `BlockDataset.collate_fn`.
+| position | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| word | \<sep\> | Hello | \<sep\> | How | are | you | \<sep\> | Good | thank | you |
+| input_ids | 50256 | 15496 | 50256 | 2437 | 389 | 345 | 50256 | 10248 | 5875 | 345 |
+| token_type_ids | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
+| attention_mask | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| | | | | | | | ↓ | ↓ | ↓ | ↓ |
+| generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
-```py
->>> import torch
->>> data_loader = torch.utils.data.DataLoader(dataset, collate_fn=BlockDataset.collate_fn)
->>> next(iter(data_loader))
-{'input_ids': tensor([[    2, 28034, 17204,     0,    58, 16151,  5450,  1378]]), 'labels': tensor([[28034, 17204,     0,    58, 16151,  5450,  1378, 12567]])}
+## Training
+
+convmodel provides training script of yoru conversation model utilizing [LightningCLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html) by [PyTorch Lightning](https://www.pytorchlightning.ai/).
+
+### Prepare data
+
+```sh
 ```
 
-`BlockDataset` implements [iterable-style dataset](https://pytorch.org/docs/stable/data.html#iterable-style-datasets).
-Therefore, to shuffle it in a training step, please combine it with `torch.utils.data.BufferedShuffleDataset`
+### Prepare config file
+
+```sh
+$ python -m convmodel.trainer --print_config >>config.yaml
+```
+
+Then modify config.yaml
+
+### Train model
+
+```sh
+$ python -m convmodel.trainer --config config.yaml
+```
+
+### Test model
+
+```sh
+```
+
+## Response generation
+
+Once a ConversationModel is trained, the ConversationModel class can load it via `from_pretrained` and generate a response by `generate` method.
+
+All the options defined in a transformers [generate method](https://huggingface.co/transformers/main_classes/model.html?highlight=generate#transformers.generation_utils.GenerationMixin.generate) can be also available in the ConversationModel `generate` method.
+A genration example as below uses `top_p` and `top_k` options with `do_sample`.
 
 ```py
-# Shuffle dataset
->>> shuffled_dataset = torch.utils.data.BufferedShuffleDataset(dataset, buffer_size=100)
->>> shuffled_data_loader = torch.utils.data.DataLoader(shuffled_dataset, collate_fn=BlockDataset.collate_fn)
->>> next(iter(shuffled_data_loader))
-{'input_ids': tensor([[ 2682,    11,  1596, 18638,    11,   657,    11,  7618]]), 'labels': tensor([[   11,  1596, 18638,    11,   657,    11,  7618,    11]])}
+>>> from convmodel import ConversationModel
+>>> model = ConversationModel.from_pretrained("model")
+>>> model.generate(context=["こんにちは"], do_sample=True, top_p=0.95, top_k=50)
 ```

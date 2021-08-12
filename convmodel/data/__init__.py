@@ -17,3 +17,4 @@ except ImportError:
 from .lm_dataset import BlockDataset
 from .bert_dataset import BertSample, BertForPreTrainingDataset
 from .jsonl_dataset import JsonLinesDataset
+from .conv_dataset import ConversationDataset

@@ -1,0 +1,6 @@
+transformers==4.8.2
+sentencepiece==0.1.95
+# Install pytorch-lightning as well as jsonargparse for enabling LightningCLI
+pytorch-lightning==1.4.1
+jsonargparse[signatures]
+fire==0.4.0
