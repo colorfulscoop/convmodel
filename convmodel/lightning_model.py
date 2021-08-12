@@ -29,7 +29,9 @@ class LightningConversationModel(pl.LightningModule):
         model = ConversationModel.from_pretrained(pretrained_model_or_path)
 
         self.model = model.hf_model
-        self._tokenizer = model.hf_tokenizer
+
+        self._hf_model = model.hf_model
+        self._tokenizer = model.tokenizer
 
         self._train_file = train_file
         self._valid_file = valid_file
@@ -43,7 +45,7 @@ class LightningConversationModel(pl.LightningModule):
         self._num_training_steps = num_training_steps
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self._lr)
+        optimizer = torch.optim.Adam(self._hf_model.parameters(), lr=self._lr)
         if self._num_training_steps:
             scheduler = transformers.get_linear_schedule_with_warmup(
                 optimizer=optimizer,
@@ -60,7 +62,7 @@ class LightningConversationModel(pl.LightningModule):
         return optimizers, schedulers
 
     def forward(self, batch):
-        output = self.model(**batch)
+        output = self._hf_model(**batch)
         return output.loss
 
     def training_step(self, batch, batch_idx):

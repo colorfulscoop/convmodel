@@ -34,6 +34,10 @@ class ConversationModel:
     def hf_model(self):
         return self._hf_model
 
+    @property
+    def tokenizer(self):
+        return self._tokenizer
+
     def save_pretrained(self, save_directory):
         self._tokenizer.save_pretrained(save_directory)
         self._hf_model.save_pretrained(save_directory)
