@@ -15,7 +15,7 @@ def load_model(config, ckpt_path):
         **config_yaml["model"]
     )
     return config_yaml, lightning_model
-   
+
 
 class Main:
     def export_model(self, config, ckpt_path, output_dir):
