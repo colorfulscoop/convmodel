@@ -6,6 +6,8 @@
 * convmodel utilizes GPT2 model to generate response.
 * convmodel handles multi-turn conversation.
 
+<hr>
+
 **Table of contents**
 
 * [Install](./install.md)
