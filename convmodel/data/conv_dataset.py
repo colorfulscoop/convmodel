@@ -13,11 +13,8 @@ class ConversationDataset(torch.utils.data.IterableDataset):
             Yields (List[int])
         """
         for context in self._generator():
-            tokenizer_result = self._tokenizer(context)
-            model_input = {
-                key: val[:-1] for key, val in tokenizer_result.items()
-            }
-            model_input["labels"] = tokenizer_result["input_ids"][1:]
+            model_input = self._tokenizer(context)
+            model_input["labels"] = model_input["input_ids"]
             yield model_input
 
     @classmethod
