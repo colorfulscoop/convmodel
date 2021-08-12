@@ -2,7 +2,11 @@
 
 ![](https://github.com/colorfulscoop/convmodel/workflows/unittest/badge.svg)
 
-**convmodel** provides a simple wrapper of [transformers](https://github.com/huggingface/transformers) to train and use a conversation model based on GPT2 :wink:.
+**convmodel** provides a conversation model based on GPT-2 provided by [transformers](https://github.com/huggingface/transformers) :wink:.
+
+:sparkles: Features :sparkles:
+* convmodel utilizes GPT2 model to generate response.
+* convmodel handles multi-turn conversation.
 
 ## Install
 
@@ -57,16 +61,26 @@ Finally, install convmodel:
 $ pip install git+https://github.com/colorfulscoop/convmodel
 ```
 
-### Model Architecture
+If you want to train your model as well, specify `[train]` option to install dependencies.
 
-A conversation model architecture implemented in convmodel is the same as transformers [GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html?highlight=gpt2lmheadmodel#transformers.GPT2LMHeadModel).
+```sh
+$ pip install git+https://github.com/colorfulscoop/convmodel[train]
+```
 
-When this model gets a context `["Hello", "How are you"]' , then it is encoded as follow.
+## Model Architecture Overview
+
+convmodel provides `ConversationModel` class.
+ConversationModel class adopts [GPT2LMHeadModel](https://huggingface.co/transformers/model_doc/gpt2.html?highlight=gpt2lmheadmodel#transformers.GPT2LMHeadModel) architecture provided by transformers library.
+
+
+Although, in a initializer of `ConversationModel`, `ConversationTokenizer` is automatically initialized, let us first directly initialize `ConversationTokenizer` to see it encodes a given context to input to the model.
+Assume that `ConversationTokenizer` gets a context `["Hello", "How are you"]` . Then `ConversationTokenizer` encodes it as follows.
 
 ```py
 >>> from convmodel import ConversationTokenizer
 >>> tokenizer = ConversationTokenizer.from_pretrained("gpt2")
->>> tokenizer(["Hello", "How are you"])
+>>> context = ["Hello", "How are you"]
+>>> tokenizer(context)
 {'input_ids': [50256, 15496, 50256, 2437, 389, 345, 50256], 'token_type_ids': [0, 0, 1, 1, 1, 1, 0], 'attention_mask': [1, 1, 1, 1, 1, 1, 1]}
 ```
 
@@ -79,7 +93,17 @@ When this model gets a context `["Hello", "How are you"]' , then it is encoded a
 
 **Note:** if a tokenizer does not assign a value to `sep_token_id`, it is automatically set with `sep_token` of `<sep>`.
 
-Then ConversationModel generates words until a `<sep>` token appears.
+When initializing `ConversationModel`, `ConversationTokenizer` is automatically initialized inside.
+`ConversationModel` implements `generate` method. In `generate` method, an input context is first encoded as above.
+Then the encoded tensors are forwardded by the model to predict following tokens until `<sep>` token appears
+
+**Note:** Here we assume that `model` directory contains a trained conversation model which was fine-tuned from gpt2 model. We will see how to train our own conversation model later.
+
+```py
+>>> from convmodel import ConversationModel
+>>> model = ConversationModel.from_pretrained("model")
+>>> model.generate(context, do_sample=True, top_p=0.95)
+```
 
 | position | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -90,7 +114,35 @@ Then ConversationModel generates words until a `<sep>` token appears.
 | | | | | | | | ↓ | ↓ | ↓ | ↓ |
 | generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
-## Usage
+## Training
+
+convmodel provides training script of yoru conversation model utilizing [LightningCLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html) by [PyTorch Lightning](https://www.pytorchlightning.ai/).
+
+### Prepare data
+
+```sh
+```
+
+### Prepare config file
+
+```sh
+$ python -m convmodel.trainer --print_config >>config.yaml
+```
+
+Then modify config.yaml
+
+### Train model
+
+```sh
+$ python -m convmodel.trainer --config config.yaml
+```
+
+### Test model
+
+```sh
+```
+
+## Response generation
 
 Once a ConversationModel is trained, the ConversationModel class can load it via `from_pretrained` and generate a response by `generate` method.
 
@@ -102,16 +154,3 @@ A genration example as below uses `top_p` and `top_k` options with `do_sample`.
 >>> model = ConversationModel.from_pretrained("model")
 >>> model.generate(context=["こんにちは"], do_sample=True, top_p=0.95, top_k=50)
 ```
-
-## Model Training
-
-To train your model, install convmodel with `train` option.
-
-```sh
-$ pip install git+https://github.com/colorfulscoop/convmodel[train]
-```
-
-convmodel provides training script of yoru conversation model utilizing [LightningCLI](https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_cli.html) by [PyTorch Lightning](https://www.pytorchlightning.ai/).
-
-The instruction to train your conversation model is under [trainer/conversation/README.md]().
-Please take a look at it and enjoy your own conversaiton :wink: .
