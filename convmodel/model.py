@@ -28,8 +28,6 @@ class ConversationModel:
 
     def generate(self, context: List[str], **kwargs):
         model_input = self._tokenizer(context)
-        # del model_input["attention_mask"]
-        # del model_input["token_type_ids"]
 
         # Convert to Torch tensor
         model_input = {key: torch.tensor([val]) for key, val in model_input.items()}
