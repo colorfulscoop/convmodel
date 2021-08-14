@@ -7,10 +7,10 @@ setuptools.setup(
     install_requires=[
         "pydantic>=1,<2",
         "transformers>=4.8.2,<5",
+        "sentencepiece>=0.1.95,<0.2",
     ],
     extras_require={
         "train": [
-            "sentencepiece>=0.1.95,<0.2",
             "pytorch-lightning>=1.4.1,<2",
             # Install pytorch-lightning as well as jsonargparse for enabling LightningCLI
             "jsonargparse[signatures]>=3.17.0,<4",
