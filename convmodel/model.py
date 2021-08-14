@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class ConversationModelOutput(BaseModel):
     responses: List[str]
-    model_output: Any
+    context: List[str]
 
 
 class ConversationModel:
@@ -57,5 +57,5 @@ class ConversationModel:
 
         return ConversationModelOutput(
             responses=responses,
-            model_output=output
+            context=context,
         )
