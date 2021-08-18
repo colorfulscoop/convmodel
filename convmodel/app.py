@@ -33,19 +33,20 @@ with col3:
 if "context" not in st.session_state:
     st.session_state.context = []
 # Prepare key for text input
-if "key" not in st.session_state:
-    st.session_state.key = 0
+if "text_input_key" not in st.session_state:
+    st.session_state.text_input_key = 0
 
 model = load_model(model_dir)
 st.success('Loading model succeeded 😉')
 
 reset_button = st.button('Reset conversation')
+
 input_area = st.empty()
 if reset_button:
     st.session_state.context = []
-    st.session_state.key += 1
+    st.session_state.text_input_key += 1
 
-user_input = input_area.text_input('User input', "", key=str(st.session_state.key))
+user_input = input_area.text_input('User input', "", key=str(st.session_state.text_input_key))
 
 # Prepare placeholder to show conversation
 conversation_area = st.empty()
@@ -57,8 +58,8 @@ if (not reset_button) and user_input:
     # If user inputted a text, clea input text
     # This technique is explained below
     # https://github.com/streamlit/streamlit/issues/623#issuecomment-551755236
-    st.session_state.key += 1
-    input_area.text_input('User input', "", key=str(st.session_state.key))
+    st.session_state.text_input_key += 1
+    input_area.text_input('User input', "", key=str(st.session_state.text_input_key))
 
     st.session_state.context.append(user_input)
     show_conversation(conversation_area, st.session_state.context)
