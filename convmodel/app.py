@@ -41,11 +41,11 @@ st.success('Loading model succeeded 😉')
 
 reset_button = st.button('Reset conversation')
 
-input_area = st.empty()
 if reset_button:
     st.session_state.context = []
     st.session_state.text_input_key += 1
 
+input_area = st.empty()
 user_input = input_area.text_input('User input', "", key=str(st.session_state.text_input_key))
 
 # Prepare placeholder to show conversation
