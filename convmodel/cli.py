@@ -11,7 +11,8 @@ class Main:
 
         path_to_app = resource_filename("convmodel", "app.py")
         cmd = ["streamlit", "run", path_to_app, *options]
-        print(f"Command to execute in subprocess: $", " ".join(cmd))
+        print(f"Command to execute in subprocess:\n")
+        print(f"\t$", " ".join(cmd))
 
         subprocess.run(cmd)
 
