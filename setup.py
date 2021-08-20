@@ -16,6 +16,9 @@ setuptools.setup(
             "jsonargparse[signatures]>=3.17.0,<4",
             "fire>=0.4.0,<0.5",
         ],
+        "cli": [
+            "streamlit>=0.86,<0.87",
+        ],
         "test": ["pytest>=5.0,<60", "black>=20.8b1,<21"],
     },
     version="0.0.0",
