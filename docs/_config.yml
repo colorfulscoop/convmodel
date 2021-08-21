@@ -1,2 +1,4 @@
+title: convmodel
+description: convmodel provides a conversation model based on GPT-2
 plugins:
   - jemoji
