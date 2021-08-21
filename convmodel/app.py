@@ -37,7 +37,7 @@ if "text_input_key" not in st.session_state:
     st.session_state.text_input_key = 0
 
 model = load_model(model_dir)
-st.success('Loading model succeeded 😉')
+st.success(f'Loading model from {model_dir} succeeded 😉')
 
 reset_button = st.button('Reset conversation')
 
