@@ -12,6 +12,7 @@
 >>> from convmodel import ConversationModel
 >>> model = ConversationModel.from_pretrained("model")
 >>> model.generate(context=["こんにちは"], do_sample=True, top_p=0.95, top_k=50)
+ConversationModelOutput(responses=['こんにちは♪'], context=['こんにちは'])
 ```
 
 | position | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
