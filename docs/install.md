@@ -8,14 +8,14 @@ Then install PyTorch >= 1.8,<=1.9. Please refer to [official document](https://p
 
 Some examples of installtion are as follows.
 
-### Example to install in Docker container without GPU
+### Install in Docker container without GPU
 
 ```sh
 $ docker container run -w /work -v $(pwd):/work --rm -it python:3.8.6-slim-buster bash
 $ pip install torch==1.8.1
 ```
 
-### Example to install in Docker container enabling GPU and CUDA 11.1
+### Install in Docker container enabling GPU and CUDA 11.1
 
 Assume that CUDA 11.1 is installed in your environment.
 
@@ -23,7 +23,7 @@ Assume that CUDA 11.1 is installed in your environment.
 $ docker container run --gpus all --ipc=host --rm -it -v $(pwd):/work -w /work nvidia/cuda:11.1-devel-ubuntu20.04 bash
 ```
 
-**Note:** `--ipc` option is required because share memory would not be enough because DataLoader multiprocess requires them. Refer to the URL for more details. https://discuss.pytorch.org/t/unable-to-write-to-file-torch-18692-1954506624/9990
+**Note:** `--ipc` option is required because share memory would not be enough because DataLoader multiprocess requires them. Refer to the [pytorch discussion](https://discuss.pytorch.org/t/unable-to-write-to-file-torch-18692-1954506624/9990) for more details.
 
 ```sh
 $ apt update && apt install -y python3 python3-pip git
