@@ -1,6 +1,16 @@
 # CLI (Experimental)
 
-Run streamlit interface to test conversation
+Currently convmodel CLI is an experimental feature.
+
+To use convmodel CLI, install convmodel with `cli` option.
+
+```sh
+$ pip install .[cli]
+```
+
+## Conversation test interface
+
+convmodel CLI provides streamlit interface to test conversation of your model.
 
 ```sh
 # Default server address and port will be used
