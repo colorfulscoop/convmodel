@@ -60,3 +60,19 @@ def test_iter():
     ]
 
     assert got == want
+
+
+def test_build_data_loader():
+    corpus = [
+        ["こんにちは"],
+        ["こんにちは", "私は誰誰です"],
+        ["こんにちは", "私は誰誰です", "おはようございます"],
+    ]
+    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
+    dataset = ConversationDataset(
+        generator=lambda: corpus,
+        tokenizer=tokenizer,
+    )
+    loader = dataset.build_data_loader(batch_size=2)
+
+    assert [item["input_ids"].shape[0] for item in loader] == [2, 1]

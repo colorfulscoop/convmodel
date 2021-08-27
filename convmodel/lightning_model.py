@@ -2,9 +2,7 @@ import pytorch_lightning as pl
 import torch
 import transformers
 from convmodel import ConversationModel
-from convmodel.tokenizer import ConversationTokenizer
 from convmodel.data import ConversationDataset
-from convmodel.data import BufferedShuffleDataset
 import json
 
 
@@ -96,48 +94,40 @@ class LightningConversationModel(pl.LightningModule):
         return (json.loads(line) for line in open(filename))
 
     def train_dataloader(self):
-        # Load data
-        train_dataset = ConversationDataset(
+        dataset = ConversationDataset(
             generator=lambda: self._load_dataset(self._train_file),
             tokenizer=self._tokenizer,
         )
-        shuffled_train_dataset = BufferedShuffleDataset(
-            train_dataset,
-            buffer_size=self._shuffle_buffer_size,
-        )
-        train_loader = torch.utils.data.DataLoader(
-            dataset=shuffled_train_dataset,
+        loader = dataset.build_data_loader(
+            shuffle_buffer_size=self._shuffle_buffer_size,
             batch_size=self._batch_size,
-            collate_fn=ConversationDataset.collate_fn,
-            prefetch_factor=self._prefetch_factor,
             num_workers=self._num_workers,
+            prefetch_factor=self._prefetch_factor,
         )
-        return train_loader
+        return loader
 
     def val_dataloader(self):
-        valid_dataset = ConversationDataset(
+        dataset = ConversationDataset(
             generator=lambda: self._load_dataset(self._valid_file),
             tokenizer=self._tokenizer,
         )
-        valid_loader = torch.utils.data.DataLoader(
-            dataset=valid_dataset,
+        loader = dataset.build_data_loader(
+            shuffle_buffer_size=None,
             batch_size=self._batch_size,
-            collate_fn=ConversationDataset.collate_fn,
-            prefetch_factor=self._prefetch_factor,
             num_workers=self._num_workers,
+            prefetch_factor=self._prefetch_factor,
         )
-        return valid_loader
+        return loader
 
     def test_dataloader(self):
-        test_dataset = ConversationDataset(
+        dataset = ConversationDataset(
             generator=lambda: self._load_dataset(self._test_file),
             tokenizer=self._tokenizer,
         )
-        test_loader = torch.utils.data.DataLoader(
-            dataset=test_dataset,
+        loader = dataset.build_data_loader(
+            shuffle_buffer_size=None,
             batch_size=self._batch_size,
-            collate_fn=ConversationDataset.collate_fn,
-            prefetch_factor=self._prefetch_factor,
             num_workers=self._num_workers,
+            prefetch_factor=self._prefetch_factor,
         )
-        return test_loader
+        return loader
