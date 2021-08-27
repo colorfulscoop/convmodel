@@ -13,8 +13,6 @@ All the options defined in a transformers [generate method](https://huggingface.
 One example below uses `top_p` and `top_k` options with `do_sample`.
 
 ```py
->>> from convmodel import ConversationModel
->>> model = ConversationModel.from_pretrained("model")
 >>> model.generate(context=["こんにちは"], do_sample=True, top_p=0.95, top_k=50)
 ConversationModelOutput(responses=['こんにちは♪'], context=['こんにちは'])
 ```
