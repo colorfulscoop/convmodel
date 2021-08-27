@@ -29,7 +29,8 @@ Please refer to [document](docs/README.md) for more details of installation, mod
 
 * [Install](docs/install.md)
 * [Model Architecture Overview](docs/model_architecture_overview.md)
-* [Usage](docs/usage.md)
+* [Model Training](docs/model_training.md)
+* [Response Generation](docs/response_generation.md)
 * [CLI (Experimental)](docs/cli.md)
 
 Enjoy talking with your conversational AI :wink:
