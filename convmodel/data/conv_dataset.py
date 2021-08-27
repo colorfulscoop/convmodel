@@ -1,5 +1,6 @@
 import torch
 from convmodel.tokenizer import ConversationTokenizer
+from convmodel.data import BufferedShuffleDataset
 
 
 class ConversationDataset(torch.utils.data.IterableDataset):
@@ -32,3 +33,20 @@ class ConversationDataset(torch.utils.data.IterableDataset):
             for key in keys
         }
         return dic
+
+    def build_data_loader(self, shuffle_buffer_size=None, batch_size=1,
+                          num_workers=0, prefetch_factor=2):
+        """build_data_loader builds DataLoader based on Dataset"""
+        dataset = self
+        if shuffle_buffer_size:
+            dataset = BufferedShuffleDataset(dataset, buffer_size=shuffle_buffer_size)
+
+        loader = torch.utils.data.DataLoader(
+            dataset=dataset,
+            batch_size=batch_size,
+            collate_fn=self.__class__.collate_fn,
+            prefetch_factor=prefetch_factor,
+            num_workers=num_workers,
+        )
+
+        return loader
