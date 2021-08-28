@@ -23,6 +23,10 @@ ConversationModelOutput(responses=['こんにちは♪'], context=['こんにち
 | | | | | | | | ↓ | ↓ | ↓ | ↓ |
 | generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
+Streamlit interface is available now to try your conversation model as an experimental feature from v0.1.0 :sparkles:
+
+![convmodel_streamlit](convmodel_streamlit.jpg)
+
 <hr>
 
 **Table of contents**
