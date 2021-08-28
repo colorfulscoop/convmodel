@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.1] - 2021-08-28
+
 ### Added
 
 - build_data_loader method in ConversationDataset class. https://github.com/colorfulscoop/convmodel/pull/5
