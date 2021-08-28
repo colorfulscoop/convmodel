@@ -3,7 +3,6 @@
 **convmodel** provides a conversation model based on GPT-2 provided by [transformers](https://github.com/huggingface/transformers) :wink:.
 
 :sparkles: Features :sparkles:
-
 * convmodel utilizes GPT2 model to generate response.
 * convmodel handles multi-turn conversation.
 * convmodel provides an useuful interface to generate a response from a given context.
@@ -24,11 +23,12 @@ ConversationModelOutput(responses=['こんにちは♪'], context=['こんにち
 | | | | | | | | ↓ | ↓ | ↓ | ↓ |
 | generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
-<hr>
+Table of contents
 
-**Table of contents**
+* [Install](install.md)
+* [Model Architecture Overview](model_architecture_overview.md)
+* [Model Training](model_training.md)
+* [Response Generation](response_generation.md)
+* [CLI (Experimental)](cli.md)
 
-* [Install](./install.md)
-* [Model Architecture Overview](./model_architecture_overview.md)
-* [Usage](./usage.md)
-* [CLI (Experimental)](./cli.md)
+Enjoy talking with your conversational AI :wink:
