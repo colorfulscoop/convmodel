@@ -25,3 +25,7 @@ $ python -m convmodel.cli run_streamlit --server.port 8080 --server.address 0.0.
 # You can check all options by --help
 $ python -m convmodel.cli run_streamlit --help
 ```
+
+As default, you can access UI via http://localhost:8501/ .
+
+![convmodel_streamlit](convmodel_streamlit.jpg)
