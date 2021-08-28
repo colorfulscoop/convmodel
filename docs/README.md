@@ -23,7 +23,9 @@ ConversationModelOutput(responses=['こんにちは♪'], context=['こんにち
 | | | | | | | | ↓ | ↓ | ↓ | ↓ |
 | generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
-Table of contents
+<br>
+
+**Table of contents**
 
 * [Install](install.md)
 * [Model Architecture Overview](model_architecture_overview.md)
