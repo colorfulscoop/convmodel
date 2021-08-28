@@ -23,7 +23,7 @@ ConversationModelOutput(responses=['こんにちは♪'], context=['こんにち
 | | | | | | | | ↓ | ↓ | ↓ | ↓ |
 | generated word | - | - | - | - | - | - | Good | thank | you | \<sep\> |
 
-<br>
+<hr>
 
 **Table of contents**
 
