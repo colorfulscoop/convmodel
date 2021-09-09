@@ -31,20 +31,30 @@ class ConversationModelOutput(BaseModel):
 
 
 class ConversationModel:
-    def __init__(self, hf_tokenizer: ConversationTokenizer, hf_model: transformers.GPT2LMHeadModel):
+    def __init__(self, hf_tokenizer: ConversationTokenizer, hf_model: transformers.GPT2LMHeadModel, device: Optional[str] = None):
         # Convert transformers Tokenizer to ConversationTokenizer
         tokenizer = ConversationTokenizer(tokenizer=hf_tokenizer)
 
         self._tokenizer = tokenizer
         self._hf_model = hf_model
 
+        # Set device
+        if device:
+            device = torch.device(device)
+        else:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._device = device
+
+        # Move model to device
+        hf_model.to(device)
+
     @classmethod
-    def from_pretrained(cls, model_name_or_path: str):
+    def from_pretrained(cls, model_name_or_path: str, device: Optional[str] = None):
         # Load model via transformers
         hf_tokenizer = transformers.AutoTokenizer.from_pretrained(model_name_or_path)
         hf_model = transformers.AutoModelForCausalLM.from_pretrained(model_name_or_path)
 
-        return cls(hf_tokenizer=hf_tokenizer, hf_model=hf_model)
+        return cls(hf_tokenizer=hf_tokenizer, hf_model=hf_model, device=device)
 
     @property
     def hf_tokenizer(self):
@@ -84,7 +94,6 @@ class ConversationModel:
         self,
         train_iterator,
         valid_iterator,
-        device,
         optimizer_class=torch.optim.Adam,
         optimizer_params={"lr": 1e-4},
         warmup_steps: int = 10000,
@@ -105,7 +114,6 @@ class ConversationModel:
 
         # Prepare model
         model = self._hf_model
-        model.to(device=device)
 
         # Prepare optimizer and scheduler
         optimizer = torch.optim.Adam(model.parameters(), **optimizer_params)
@@ -151,7 +159,7 @@ class ConversationModel:
                 # ロスの計算グラフを構築する
                 # forward 関数は、検証時にも利用するため別の関数で後で定義する
                 with torch.cuda.amp.autocast(enabled=use_amp):
-                    batch = {key: val.to(device=device) for key, val in batch.items()}
+                    batch = {key: val.to(device=self._device) for key, val in batch.items()}
                     loss = model(**batch).loss
                     loss = loss / accumulation_steps
 
@@ -191,7 +199,7 @@ class ConversationModel:
             with torch.no_grad():
                 val_loss = 0
                 for val_batch_idx, batch in _show_progress_bar(enumerate(valid_dataloader, start=1), show=_show_progress_bar):
-                    batch = {key: val.to(device=device) for key, val in batch.items()}
+                    batch = {key: val.to(device=self._device) for key, val in batch.items()}
                     loss = model(**batch).loss
                     val_loss += loss.item()
 
