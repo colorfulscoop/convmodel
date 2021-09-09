@@ -4,17 +4,17 @@ from convmodel.data import BufferedShuffleDataset
 
 
 class ConversationDataset(torch.utils.data.IterableDataset):
-    def __init__(self, generator, tokenizer: ConversationTokenizer):
+    def __init__(self, iterator, tokenizer: ConversationTokenizer):
         super().__init__()
-        self._generator = generator
+        self._iterator = iterator
         self._tokenizer = tokenizer
 
     def __iter__(self):
         """
             Yields (List[int])
         """
-        for context in self._generator():
-            model_input = self._tokenizer(context)
+        for example in self._iterator:
+            model_input = self._tokenizer(example.conversation)
             model_input["labels"] = model_input["input_ids"]
             yield model_input
 

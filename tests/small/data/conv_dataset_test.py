@@ -1,4 +1,5 @@
 from convmodel.data import ConversationDataset
+from convmodel.data import ConversationExample as Ex
 from convmodel.tokenizer import ConversationTokenizer
 
 
@@ -18,13 +19,13 @@ class TokenizerMock:
 
 def test_iter():
     corpus = [
-        ["こんにちは"],
-        ["こんにちは", "私は誰誰です"],
-        ["こんにちは", "私は誰誰です", "おはようございます"],
+        Ex(conversation=["こんにちは"]),
+        Ex(conversation=["こんにちは", "私は誰誰です"]),
+        Ex(conversation=["こんにちは", "私は誰誰です", "おはようございます"]),
     ]
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     dataset = ConversationDataset(
-        generator=lambda: corpus,
+        iterator=corpus,
         tokenizer=tokenizer,
     )
     got = list(iter(dataset))
@@ -64,13 +65,13 @@ def test_iter():
 
 def test_build_data_loader():
     corpus = [
-        ["こんにちは"],
-        ["こんにちは", "私は誰誰です"],
-        ["こんにちは", "私は誰誰です", "おはようございます"],
+        Ex(conversation=["こんにちは"]),
+        Ex(conversation=["こんにちは", "私は誰誰です"]),
+        Ex(conversation=["こんにちは", "私は誰誰です", "おはようございます"]),
     ]
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     dataset = ConversationDataset(
-        generator=lambda: corpus,
+        iterator=corpus,
         tokenizer=tokenizer,
     )
     loader = dataset.build_data_loader(batch_size=2)

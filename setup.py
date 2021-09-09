@@ -11,9 +11,6 @@ setuptools.setup(
     ],
     extras_require={
         "train": [
-            "pytorch-lightning>=1.4.1,<2",
-            # Install pytorch-lightning as well as jsonargparse for enabling LightningCLI
-            "jsonargparse[signatures]>=3.17.0,<4",
             "fire>=0.4.0,<0.5",
         ],
         "cli": [
