@@ -4,11 +4,25 @@ from typing import List, Optional
 from pydantic import BaseModel
 import torch
 import tqdm
+import numpy as np
+import random
 import transformers
 
 
 def _show_progress_bar(seq, show: bool):
     return tqdm.tqdm(seq) if show else seq
+
+
+def _set_reproducibility(seed: int = None, deterministic: bool = False):
+    """
+    Refer to the document for details
+    https://pytorch.org/docs/stable/notes/randomness.html
+    """
+    if seed:
+        torch.manual_seed(seed)
+        random.seed(seed)
+        np.random.seed(seed)
+    torch.use_deterministic_algorithms(deterministic)
 
 
 class ConversationModelOutput(BaseModel):
@@ -83,7 +97,12 @@ class ConversationModel:
         batch_size: int = 1,
         num_workers: int = 0,
         prefetch_factor: int = 2,
+        seed: Optional[int] = None,
+        deterministic: bool = False,
     ):
+        # Set Reproducibility
+        _set_reproducibility(seed=seed, deterministic=deterministic)
+
         # Prepare model
         model = self._hf_model
         model.to(device=device)
