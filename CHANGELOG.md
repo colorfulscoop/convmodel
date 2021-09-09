@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- fit method in ConversatonModel. https://github.com/colorfulscoop/convmodel/pull/8
+
+### Changed
+
+- device transfer code in fit method. https://github.com/colorfulscoop/convmodel/pull/9
+
+### Removed
+
+- Obsoleted modules for bert and gpt2_lm. https://github.com/colorfulscoop/convmodel/pull/7/files
+
 ## [v0.1.1] - 2021-08-28
 
 ### Added
