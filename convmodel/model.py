@@ -1,8 +1,14 @@
 from convmodel.tokenizer import ConversationTokenizer
-import transformers 
-import torch
-from typing import List, Any
+from convmodel.data import ConversationDataset
+from typing import List, Optional
 from pydantic import BaseModel
+import torch
+import tqdm
+import transformers
+
+
+def _show_progress_bar(seq, show: bool):
+    return tqdm.tqdm(seq) if show else seq
 
 
 class ConversationModelOutput(BaseModel):
@@ -59,3 +65,122 @@ class ConversationModel:
             responses=responses,
             context=context,
         )
+
+    def fit(
+        self,
+        train_iterator,
+        valid_iterator,
+        device,
+        optimizer_class=torch.optim.Adam,
+        optimizer_params={"lr": 1e-4},
+        warmup_steps: int = 10000,
+        use_amp: bool = False,
+        epochs: int = 1,
+        accumulation_steps: int = 1,
+        show_progress_bar: bool=True,
+        log_steps: int = 100,
+        shuffle_buffer_size: Optional[int] = None,
+        batch_size: int = 1,
+        num_workers: int = 0,
+        prefetch_factor: int = 2,
+    ):
+        # Prepare model
+        model = self._hf_model
+        model.to(device=device)
+
+        # Prepare optimizer and scheduler
+        optimizer = torch.optim.Adam(model.parameters(), **optimizer_params)
+        scheduler = transformers.get_constant_schedule_with_warmup(
+            optimizer=optimizer,
+            num_warmup_steps=warmup_steps,
+        )
+
+        # Prepare data
+        train_dataloader = ConversationDataset(
+            iterator=train_iterator,
+            tokenizer=self._tokenizer,
+        ).build_data_loader(
+            shuffle_buffer_size=shuffle_buffer_size,
+            batch_size=batch_size,
+            num_workers=num_workers,
+            prefetch_factor=prefetch_factor,
+        )
+
+        valid_dataloader = ConversationDataset(
+            iterator=valid_iterator,
+            tokenizer=self._tokenizer,
+        ).build_data_loader(
+            # Do NOT need to shuffle validation data
+            shuffle_buffer_size=None,
+            batch_size=batch_size,
+            num_workers=num_workers,
+            prefetch_factor=prefetch_factor,
+        )
+
+        # Setup scaler for SMP
+        # Please refer to https://pytorch.org/tutorials/recipes/recipes/amp_recipe.html
+        scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+
+        # variables to use in log
+        num_steps = 0
+
+        for epoch in range(1, epochs+1):
+            # [*1] 学習モード
+            model.train()
+
+            for train_batch_idx, batch in _show_progress_bar(enumerate(train_dataloader, start=1), show=show_progress_bar):
+                # ロスの計算グラフを構築する
+                # forward 関数は、検証時にも利用するため別の関数で後で定義する
+                with torch.cuda.amp.autocast(enabled=use_amp):
+                    batch = {key: val.to(device=device) for key, val in batch.items()}
+                    loss = model(**batch).loss
+                    loss = loss / accumulation_steps
+
+                # 勾配を計算し、その結果をテンソルの.gradに保存する
+                scaler.scale(loss).backward()
+
+                if train_batch_idx % accumulation_steps == 0:
+                    # 勾配に従ってオプティマイザに登録したパラメータ (required_grad=Trueのテンソル) を更新
+                    scaler.step(optimizer)
+                    scaler.update()
+                    scheduler.step()
+                    # [*2] 勾配の初期化Go
+                    optimizer.zero_grad()
+
+                    num_steps += 1
+
+                # エポックのロス計算は、勾配計算を行わないため計算グラフを構築する必要はない。
+                # 計算グラフを構築しないために item を使ってテンソルの中身を取り出して計算している。
+                # item を使わないと計算グラフをバッチのループ毎に作り続けそれを train_loss にキープし続けるため、
+                # メモリを大量に消費してしまう
+
+                # ログの出力
+                if train_batch_idx % (accumulation_steps * log_steps) == 0:
+                    batch_log = dict(
+                        epoch=epoch,
+                        batch=train_batch_idx,
+                        step=num_steps,
+                        train_loss=loss.item(),
+                        lr=optimizer.param_groups[0]['lr'],
+                    )
+                    print(batch_log)
+
+            # [*1] 検証モード
+            model.eval()
+            # [*3] 推論モードでは勾配計算しないので計算グラフを作成する必要がない。
+            #      `torch.no_grad()` コンテキスト内のテンソルの計算では計算グラフは構築されない。
+            with torch.no_grad():
+                val_loss = 0
+                for val_batch_idx, batch in _show_progress_bar(enumerate(valid_dataloader, start=1), show=_show_progress_bar):
+                    batch = {key: val.to(device=device) for key, val in batch.items()}
+                    loss = model(**batch).loss
+                    val_loss += loss.item()
+
+                    # 次の行の assert で計算グラフが構築されていないことが確認できる。
+                    # assert loss.grad is None
+
+            epoch_log = dict(
+                epoch=epoch,
+                valid_loss=val_loss/val_batch_idx,
+            )
+            print(epoch_log)
