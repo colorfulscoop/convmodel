@@ -1,0 +1,20 @@
+{
+  "pretrained_model_or_path": "(input your pretrained model path",
+  "output_path": "(input your output path)",
+  "train_file": "(input yout train file)",
+  "valid_file": "(input your valid file)",
+  "device": null,
+  "lr": 1e-4,
+  "warmup_steps": 10000,
+  "use_amp": false,
+  "epochs": 1,
+  "accumulation_steps": 1,
+  "show_progress_bar": true,
+  "log_steps": 100,
+  "shuffle_buffer_size": null,
+  "batch_size": 1,
+  "num_workers": 0,
+  "prefetch_factor": 2,
+  "seed": null,
+  "deterministic": false
+}
