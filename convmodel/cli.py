@@ -79,9 +79,3 @@ class CliEntrypoint:
         )
 
         model.save_pretrained(config.output_path)
-
-
-if __name__ == "__main__":
-    import fire
-
-    fire.Fire(Main)
