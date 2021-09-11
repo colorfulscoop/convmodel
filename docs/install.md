@@ -44,9 +44,3 @@ Finally, install convmodel:
 ```sh
 $ pip install git+https://github.com/colorfulscoop/convmodel
 ```
-
-If you want to train your own model as well, specify `[train]` option to install dependencies.
-
-```sh
-$ pip install git+https://github.com/colorfulscoop/convmodel[train]
-```

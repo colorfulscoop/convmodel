@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - fit method in ConversatonModel. https://github.com/colorfulscoop/convmodel/pull/8
+- fit CLI https://github.com/colorfulscoop/convmodel/pull/10
 
 ### Changed
 
