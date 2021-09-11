@@ -5,12 +5,12 @@ Currently convmodel CLI is an experimental feature.
 To use convmodel CLI, install convmodel with `cli` option.
 
 ```sh
-$ pip install .[cli]
+$ pip install git+https://github.com/colorfulscoop/convmodel[cli]
 ```
 
 ## fit - Model training
 
-This is a simple wrapper CLI interface of `ConversationModel.fit` method.
+This is a simple wrapper interface of `ConversationModel.fit` method.
 You can simply run training by json config file via this interface.
 
 All you need to do is preparing json config file. A template is prepared under `example/fit_config.json`.
