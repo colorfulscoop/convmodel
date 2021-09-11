@@ -8,11 +8,9 @@ setuptools.setup(
         "pydantic>=1,<2",
         "transformers>=4.8.2,<5",
         "sentencepiece>=0.1.95,<0.2",
+        "fire>=0.4.0,<0.5",
     ],
     extras_require={
-        "train": [
-            "fire>=0.4.0,<0.5",
-        ],
         "cli": [
             "streamlit>=0.87,<0.88",
         ],
