@@ -8,7 +8,7 @@ The model is easily loaded by using `from_pretrained` method defined in `Convers
 ```py
 from convmodel import ConversationModel
 
-model = ConverstationModel.from_pretrained("gpt-2")
+model = ConverstationModel.from_pretrained("gpt2")
 ```
 
 If you want to use GPU to train, `device` option is for that.
@@ -16,10 +16,10 @@ If you want to use GPU to train, `device` option is for that.
 
 ```py
 # Load model in GPU
-model = ConverstationModel.from_pretrained("gpt-2", device="cuda")
+model = ConverstationModel.from_pretrained("gpt2", device="cuda")
 
 # Load model in CPU
-model = ConverstationModel.from_pretrained("gpt-2", device="cpu")
+model = ConverstationModel.from_pretrained("gpt2", device="cpu")
 ```
 
 If you do not specify any values to `device`, GPU is used if available.
