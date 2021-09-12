@@ -3,11 +3,34 @@ site_name: convmodel
 theme:
   name: material
   palette:
-    scheme: default
-    primary: amber
+    # scheme: default
+    - scheme: default
+      primary: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      primary: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
 
 repo_name: colorfulscoop/convmodel
 repo_url: https://github.com/colorfulscoop/convmodel
+
+# Disable edit button
+edit_uri: ""
+
+# Social
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/colorfulscoop
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/colorfulscoop
+
+# Copyright
+copyright: Copyright &copy; 2020 - Colorful Scoop
 
 nav:
 - Overview: index.md
