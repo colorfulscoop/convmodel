@@ -5,7 +5,7 @@ Currently convmodel CLI is an experimental feature.
 To use convmodel CLI, install convmodel with `cli` option.
 
 ```sh
-$ pip install git+https://github.com/colorfulscoop/convmodel[cli]
+$ pip install convmodel[cli]
 ```
 
 ## fit - Model training

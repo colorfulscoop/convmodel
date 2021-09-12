@@ -42,5 +42,5 @@ $ pip3 install torch==1.8.1+cu111 -f https://download.pytorch.org/whl/torch_stab
 Finally, install convmodel:
 
 ```sh
-$ pip install git+https://github.com/colorfulscoop/convmodel
+$ pip install convmodel
 ```
