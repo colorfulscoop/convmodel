@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0]
+
 ### Added
 
 - fit method in ConversatonModel. https://github.com/colorfulscoop/convmodel/pull/8
@@ -15,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - device transfer code in fit method. https://github.com/colorfulscoop/convmodel/pull/9
+- document to use MkDocs. https://github.com/colorfulscoop/convmodel/pull/11
 
 ### Removed
 
