@@ -1,0 +1,32 @@
+site_name: convmodel
+
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: amber
+
+repo_name: colorfulscoop/convmodel
+repo_url: https://github.com/colorfulscoop/convmodel
+
+nav:
+- Overview: index.md
+- Install: install.md
+- Model Architecture: model_architecture_overview.md
+- Model Training: model_training.md
+- Response Generation: response_generation.md
+- CLI (Experimental): cli.md
+
+
+markdown_extensions:
+# Code highlight
+- pymdownx.highlight
+- pymdownx.superfences
+# Use note starting by `!!! note`
+- admonition
+# Use collapsible starting by `??? note`
+- pymdownx.details
+# Emoji
+- pymdownx.emoji:
+    emoji_index: !!python/name:materialx.emoji.twemoji
+    emoji_generator: !!python/name:materialx.emoji.to_svg

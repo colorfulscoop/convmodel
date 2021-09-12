@@ -25,16 +25,6 @@ ConversationModelOutput(responses=['こんにちは♪'], context=['こんにち
 
 Streamlit interface is available now to try your conversation model as an experimental feature from v0.1.0 :sparkles:
 
-![convmodel_streamlit](convmodel_streamlit.jpg)
-
-<hr>
-
-**Table of contents**
-
-* [Install](install.md)
-* [Model Architecture Overview](model_architecture_overview.md)
-* [Model Training](model_training.md)
-* [Response Generation](response_generation.md)
-* [CLI (Experimental)](cli.md)
+![convmodel_streamlit](img/convmodel_streamlit.jpg)
 
 Enjoy talking with your conversational AI :wink:
