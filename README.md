@@ -29,7 +29,7 @@ Streamlit interface is available now to try your conversation model as an experi
 
 ![convmodel_streamlit](docs/en/docs/img/convmodel_streamlit.jpg)
 
-Please refer to [document](docs/en/docs/README.md) for more details of installation, model architecture and usage.
+Please refer to [document](docs/en/docs/index.md) for more details of installation, model architecture and usage.
 
 * [Install](docs/en/docs/install.md)
 * [Model Architecture Overview](docs/en/docs/model_architecture_overview.md)
