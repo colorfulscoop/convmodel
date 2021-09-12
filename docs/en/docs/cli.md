@@ -90,4 +90,4 @@ $ python -m convmodel.cli run_streamlit --help
 
 As default, you can access UI via http://localhost:8501/ .
 
-![convmodel_streamlit](convmodel_streamlit.jpg)
+![convmodel_streamlit](img/convmodel_streamlit.jpg)
