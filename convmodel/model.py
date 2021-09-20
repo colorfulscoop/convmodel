@@ -7,6 +7,7 @@ import tqdm
 import numpy as np
 import random
 import transformers
+import math
 
 
 def _show_progress_bar(seq, show: bool):
@@ -94,6 +95,8 @@ class ConversationModel:
         self,
         train_iterator,
         valid_iterator,
+        output_path: Optional[str] = None,
+        save_best_model: bool = False,
         optimizer_class=torch.optim.Adam,
         optimizer_params={"lr": 1e-4},
         warmup_steps: int = 10000,
@@ -109,6 +112,16 @@ class ConversationModel:
         seed: Optional[int] = None,
         deterministic: bool = False,
     ):
+        """fit method enables train this model based on given train_iterator.
+
+        Args:
+            train_iterator (Iterator[ConversationExample]): iterator to use in training.
+
+        """
+        # Parameter assertion
+        if save_best_model:
+            assert output_path, f"Set output_path when you set save_best_model to True"
+
         # Set Reproducibility
         _set_reproducibility(seed=seed, deterministic=deterministic)
 
@@ -150,6 +163,9 @@ class ConversationModel:
 
         # variables to use in log
         num_steps = 0
+
+        # keep best model loss
+        best_val_loss = float("infinity")
 
         for epoch in range(1, epochs+1):
             # [*1] 学習モード
@@ -203,11 +219,26 @@ class ConversationModel:
                     loss = model(**batch).loss
                     val_loss += loss.item()
 
-                    # 次の行の assert で計算グラフが構築されていないことが確認できる。
-                    # assert loss.grad is None
+            # Decide whether model is saved or not
+            val_loss_per_batch = val_loss/val_batch_idx
+            save_model = False
+
+            if output_path:
+                save_model = True
+                if val_loss_per_batch < best_val_loss:
+                    best_val_loss = val_loss_per_batch
+                else:
+                    if save_best_model:
+                        save_model = False
+
+            # Save model
+            if save_model:
+                self.save_pretrained(output_path)
 
             epoch_log = dict(
                 epoch=epoch,
-                valid_loss=val_loss/val_batch_idx,
+                valid_loss=val_loss_per_batch,
+                valid_ppl=math.exp(val_loss_per_batch),
+                save_model=save_model,
             )
             print(epoch_log)

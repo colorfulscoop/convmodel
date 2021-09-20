@@ -23,6 +23,7 @@ class FitConfig(BaseModel):
     output_path: str
     train_file: str
     valid_file: str
+    save_best_model: bool = False
     device: Optional[str] = None
     lr: float = 1e-4
     warmup_steps: int = 10000
@@ -65,6 +66,8 @@ class CliEntrypoint:
         model.fit(
             train_iterator=train_data,
             valid_iterator=valid_data,
+            save_best_model=config.save_best_model,
+            output_path=config.output_path,
             use_amp=config.use_amp,
             epochs=config.epochs,
             accumulation_steps=config.accumulation_steps,
@@ -77,5 +80,3 @@ class CliEntrypoint:
             seed=config.seed,
             deterministic=config.deterministic,
         )
-
-        model.save_pretrained(config.output_path)

@@ -22,6 +22,7 @@ $ cat example/fit_config.json
   "output_path": "(input your output path)",
   "train_file": "(input yout train file)",
   "valid_file": "(input your valid file)",
+  "save_best_model": false,
   "device": null,
   "lr": 1e-4,
   "warmup_steps": 10000,
