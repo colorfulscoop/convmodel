@@ -82,8 +82,37 @@ valid_iterator = JsonLinesIterator("input/valid.jsonl")
 
 ## Training
 
-Finally, you can start training by calling `fit` method with train/valid itarators.
+Finally, you can start training by calling `fit` method with train and valid itarators.
 
 ```sh
-model = ConversationModel.fit(train_iterator=train_iterator, valid_iterator=valid_iterator)
+model.fit(train_iterator=train_iterator, valid_iterator=valid_iterator)
+```
+
+### Fit with model saving
+
+Although you can save the model by calling `.save_pretrained` directly to the model as follows,
+
+```sh
+model.save_pretrained("model")
+```
+
+you can also pass the directory to be saved as `output_path` parameter to `fit` method.
+
+```sh
+model.fit(train_iterator=train_iterator, valid_iterator=valid_iterator, output_path="model")
+```
+
+`output_path` option allows you to pass `save_best_model` as a parameter.
+This option enables to save only the best model based on validation perplexity in `output_path`.
+
+```sh
+model.fit(train_iterator=train_iterator, valid_iterator=valid_iterator, output_path="model", save_best_model=True)
+```
+
+## Load trained model
+
+Oncde model training is completed, you can load your trained model by `.from_pretrained` method.
+
+```sh
+model = ConversationModel.from_pretrained("model")
 ```
