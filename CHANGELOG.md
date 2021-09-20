@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `output_path` and `save_best_model` parameters to `fit` method. https://github.com/colorfulscoop/convmodel/pull/13
+  - `output_path`: when given, model is saved while training in the fit method. Default is None (will not be saved)
+  - `save_best_model`: when given with output_path, fit will only save the best model in `output_path`
+
 ## [v0.2.0]
 
 ### Added
