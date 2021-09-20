@@ -23,7 +23,7 @@ class FitConfig(BaseModel):
     output_path: str
     train_file: str
     valid_file: str
-    save_best_model: bool = True
+    save_best_model: bool = False
     device: Optional[str] = None
     lr: float = 1e-4
     warmup_steps: int = 10000

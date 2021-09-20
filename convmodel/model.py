@@ -95,8 +95,8 @@ class ConversationModel:
         self,
         train_iterator,
         valid_iterator,
-        output_path: str,
-        save_best_model: bool = True,
+        output_path: Optional[str] = None,
+        save_best_model: bool = False,
         optimizer_class=torch.optim.Adam,
         optimizer_params={"lr": 1e-4},
         warmup_steps: int = 10000,
@@ -118,6 +118,10 @@ class ConversationModel:
             train_iterator (Iterator[ConversationExample]): iterator to use in training.
 
         """
+        # Parameter assertion
+        if save_best_model:
+            assert output_path, f"Set output_path when you set save_best_model to True"
+
         # Set Reproducibility
         _set_reproducibility(seed=seed, deterministic=deterministic)
 
@@ -215,20 +219,19 @@ class ConversationModel:
                     loss = model(**batch).loss
                     val_loss += loss.item()
 
-                    # 次の行の assert で計算グラフが構築されていないことが確認できる。
-                    # assert loss.grad is None
-
-            # Update best validation loss
+            # Decide whether model is saved or not
             val_loss_per_batch = val_loss/val_batch_idx
             save_model = False
 
-            if val_loss_per_batch < best_val_loss:
-                best_val_loss = val_loss_per_batch
-                if save_best_model:
-                    save_model = True
-            if not save_best_model:
-                # Save model everytime if save_best_model is set to False
+            if output_path:
                 save_model = True
+                if val_loss_per_batch < best_val_loss:
+                    best_val_loss = val_loss_per_batch
+                else:
+                    if save_best_model:
+                        save_model = False
+
+            # Save model
             if save_model:
                 self.save_pretrained(output_path)
 
