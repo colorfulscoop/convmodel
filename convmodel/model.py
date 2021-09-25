@@ -242,3 +242,37 @@ class ConversationModel:
                 save_model=save_model,
             )
             print(epoch_log)
+
+    def eval(
+        self,
+        eval_iterator,
+        batch_size: int=1,
+        num_workers: int=0,
+        prefetch_factor: int=2
+    ):
+        model = self._hf_model
+        model.eval()
+
+        eval_dataloader = ConversationDataset(
+            iterator=eval_iterator,
+            tokenizer=self._tokenizer,
+        ).build_data_loader(
+            shuffle_buffer_size=None,
+            batch_size=batch_size,
+            num_workers=num_workers,
+            prefetch_factor=prefetch_factor,
+        )
+
+        with torch.no_grad():
+            eval_loss = 0
+            for batch_idx, batch in _show_progress_bar(enumerate(eval_dataloader, start=1), show=_show_progress_bar):
+                batch = {key: val.to(device=self._device) for key, val in batch.items()}
+                loss = model(**batch).loss
+                eval_loss += loss.item()
+
+        eval_loss = eval_loss / batch_idx
+        log = dict(
+            eval_loss=eval_loss,
+            eval_ppl=math.exp(eval_loss),
+        )
+        print(log)

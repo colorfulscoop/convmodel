@@ -23,6 +23,7 @@ class FitConfig(BaseModel):
     output_path: str
     train_file: str
     valid_file: str
+    eval_file: Optional[str] = None
     save_best_model: bool = False
     device: Optional[str] = None
     lr: float = 1e-4
@@ -79,4 +80,20 @@ class CliEntrypoint:
             prefetch_factor=config.prefetch_factor,
             seed=config.seed,
             deterministic=config.deterministic,
+        )
+
+    def eval(self, config):
+        config = FitConfig.parse_file(config)
+        # Prepare model
+        model = ConversationModel.from_pretrained(config.pretrained_model_or_path, device=config.device)
+
+        # Prepare data
+        eval_data = JsonLinesIterator(config.eval_file)
+
+        # Fit model
+        model.eval(
+            eval_iterator=eval_data,
+            batch_size=config.batch_size,
+            num_workers=config.num_workers,
+            prefetch_factor=config.prefetch_factor
         )
