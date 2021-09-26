@@ -12,7 +12,7 @@ setuptools.setup(
     ],
     extras_require={
         "cli": [
-            "streamlit>=0.87,<0.88",
+            "streamlit>=0.88",
         ],
         "test": ["pytest>=5.0,<60", "black>=20.8b1,<21"],
     },
