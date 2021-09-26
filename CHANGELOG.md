@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `save_best_model`: when given with output_path, fit will only save the best model in `output_path`
 - eval method in model and cli. https://github.com/colorfulscoop/convmodel/pull/14
 
+### Changed
+
+- streamlit UI by using side-by-side columns to show conversation. https://github.com/colorfulscoop/convmodel/pull/15
+
 ## [v0.2.0]
 
 ### Added
