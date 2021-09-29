@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `output_path` and `save_best_model` parameters to `fit` method. https://github.com/colorfulscoop/convmodel/pull/13
   - `output_path`: when given, model is saved while training in the fit method. Default is None (will not be saved)
   - `save_best_model`: when given with output_path, fit will only save the best model in `output_path`
+- `min_new_tokens` option to `generate` method. https://github.com/colorfulscoop/convmodel/pull/16
 - eval method in model and cli. https://github.com/colorfulscoop/convmodel/pull/14
 
 ### Changed
 
 - streamlit UI by using side-by-side columns to show conversation. https://github.com/colorfulscoop/convmodel/pull/15
+- Change CLI command name from run_streamlit to try. https://github.com/colorfulscoop/convmodel/pull/17
 
 ## [v0.2.0]
 

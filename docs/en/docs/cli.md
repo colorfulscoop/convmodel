@@ -1,6 +1,10 @@
 # CLI (Experimental)
 
-Currently convmodel CLI is an experimental feature.
+!!! warning
+    Currently convmodel CLI is an experimental feature.
+
+CLI provides commands to continue "fit - eval - try" loop to improve your conversation model.
+
 
 To use convmodel CLI, install convmodel with `cli` option.
 
@@ -8,7 +12,7 @@ To use convmodel CLI, install convmodel with `cli` option.
 $ pip install convmodel[cli]
 ```
 
-## fit - Model training
+## fit - train your model
 
 This is a simple wrapper interface of `ConversationModel.fit` method.
 You can simply run training by json config file via this interface.
@@ -22,6 +26,7 @@ $ cat example/fit_config.json
   "output_path": "(input your output path)",
   "train_file": "(input yout train file)",
   "valid_file": "(input your valid file)",
+  "eval_file": "(input your eval file)",
   "save_best_model": false,
   "device": null,
   "lr": 1e-4,
@@ -71,22 +76,30 @@ After completing training, you can load the trained model from `output_path` for
 >>> model = ConversationModel.from_pretrained("model")
 ```
 
-## run_streamlit - Conversation test interface
+## eval - evaluate your model
+
+You can evaluate your model towards `eval_file` defined in config file.
+
+```sh
+$ python -m convmodel eval --config example/fit_config.json
+```
+
+## try - try your model
 
 convmodel CLI provides streamlit interface to test conversation of your model.
 
 ```sh
 # Default server address and port will be used
-$ python -m convmodel.cli run_streamlit
+$ python -m convmodel try
 
 # You can set server port via --server.port option
-$ python -m convmodel.cli run_streamlit --server.port 8080
+$ python -m convmodel try --server.port 8080
 
 # You can set server address and port via --server.address
-$ python -m convmodel.cli run_streamlit --server.port 8080 --server.address 0.0.0.0
+$ python -m convmodel try --server.port 8080 --server.address 0.0.0.0
 
 # You can check all options by --help
-$ python -m convmodel.cli run_streamlit --help
+$ python -m convmodel try --help
 ```
 
 As default, you can access UI via http://localhost:8501/ .
