@@ -73,15 +73,28 @@ class ConversationModel:
         self._tokenizer.save_pretrained(save_directory)
         self._hf_model.save_pretrained(save_directory)
 
-    def generate(self, context: List[str], **kwargs):
+    def generate(self, context: List[str], min_new_tokens: Optional[int] = None, **kwargs):
         model_input = self._tokenizer(context)
 
         # Convert to Torch tensor
         model_input = {key: torch.tensor([val]) for key, val in model_input.items()}
+
+        #
+        # New parameter implementation of `min_new_tokens`
+        # - min_length is set by considering minimum #tokens to generate if min_length is not provided as arguments.
+        #
+        min_length = None
+        if "min_length" in kwargs:
+            min_length = kwargs["min_length"]
+        elif min_new_tokens:
+            min_length = model_input["input_ids"].shape[-1] + min_new_tokens
+
+        # Generate response
         output = self._hf_model.generate(
             **model_input,
             **kwargs,
-            eos_token_id=self._tokenizer.sep_token_id
+            eos_token_id=self._tokenizer.sep_token_id,
+            min_length=min_length,
         )
 
         responses = [self._tokenizer.decode(item) for item in output[:, model_input["input_ids"].shape[-1]:]]
