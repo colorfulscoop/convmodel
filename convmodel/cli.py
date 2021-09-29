@@ -42,7 +42,11 @@ class FitConfig(BaseModel):
 
 
 class CliEntrypoint:
-    def run_streamlit(self, **kwargs):
+    def __init__(self):
+        # Use setattr to avoid invalid syntac of `self.try = ...`
+        setattr(self, "try", self._run_streamlit)
+
+    def _run_streamlit(self, **kwargs):
         options = []
         for key, val in kwargs.items():
             options.extend([f"--{key}", f"{val}"])
