@@ -15,21 +15,23 @@ $ pip install convmodel[cli]
 ## fit - train your model
 
 This is a simple wrapper interface of `ConversationModel.fit` method.
-You can simply run training by json config file via this interface.
+You can simply run training based on a json config file.
 
-All you need to do is preparing json config file. A template is prepared under `example/fit_config.json`.
+All you need to do is preparing json config file.
+You can generate a template file as follows.
 
 ```sh
-$ cat example/fit_config.json
+$ python -m convmodel fit --print_config >config.json
+$ cat config.json
 {
-  "pretrained_model_or_path": "(input your pretrained model path",
-  "output_path": "(input your output path)",
-  "train_file": "(input yout train file)",
-  "valid_file": "(input your valid file)",
-  "eval_file": "(input your eval file)",
+  "pretrained_model_or_path": "",
+  "output_path": "",
+  "train_file": "",
+  "valid_file": "",
+  "eval_file": null,
   "save_best_model": false,
   "device": null,
-  "lr": 1e-4,
+  "lr": 0.0001,
   "warmup_steps": 10000,
   "use_amp": false,
   "epochs": 1,
@@ -54,7 +56,10 @@ At least you need to edit 4 parameters.
 | train_file | Path for training data file. The format should be Json Lines. Each line needs to contain a list of string, which are one example of conversation | `input/train.jsonl` |
 | valid_file | Path for validation data file. Format is the same as `train_file`. | `input/valid.jsonl` |
 
-One example of train/valid file is as follows.
+The format of train and valid files should be [JSON Lines](https://jsonlines.org/).
+Each line should be a list of utterances of each conversation.
+
+One example of the files is as follows.
 
 ```sh
 $ head -n3 input/train.jsonl
@@ -66,10 +71,10 @@ $ head -n3 input/train.jsonl
 After preparing config json file, you can start training by `fit` CLI command.
 
 ```sh
-$ python -m convmodel fit --config example/fit_config.json
+$ python -m convmodel fit --config config.json
 ```
 
-After completing training, you can load the trained model from `output_path` for `ConversationModel`.
+Once training completes, you can load the trained model from `output_path` for `ConversationModel`.
 
 ```py
 >>> from convmodel import ConversationModel
@@ -81,7 +86,7 @@ After completing training, you can load the trained model from `output_path` for
 You can evaluate your model towards `eval_file` defined in config file.
 
 ```sh
-$ python -m convmodel eval --config example/fit_config.json
+$ python -m convmodel eval --config config.json
 ```
 
 ## try - try your model

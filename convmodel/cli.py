@@ -58,33 +58,39 @@ class CliEntrypoint:
 
         subprocess.run(cmd)
 
-    def fit(self, config):
-        config = FitConfig.parse_file(config)
-        # Prepare model
-        model = ConversationModel.from_pretrained(config.pretrained_model_or_path, device=config.device)
+    def fit(self, config: Optional[str]=None, print_config: bool=False):
+        if print_config:
+            config = FitConfig(pretrained_model_or_path="", output_path="", train_file="", valid_file="")
+            print(config.json(indent=2))
+        elif config:
+            config = FitConfig.parse_file(config)
+            # Prepare model
+            model = ConversationModel.from_pretrained(config.pretrained_model_or_path, device=config.device)
 
-        # Prepare data
-        train_data = JsonLinesIterator(config.train_file)
-        valid_data = JsonLinesIterator(config.valid_file)
+            # Prepare data
+            train_data = JsonLinesIterator(config.train_file)
+            valid_data = JsonLinesIterator(config.valid_file)
 
-        # Fit model
-        model.fit(
-            train_iterator=train_data,
-            valid_iterator=valid_data,
-            save_best_model=config.save_best_model,
-            output_path=config.output_path,
-            use_amp=config.use_amp,
-            epochs=config.epochs,
-            accumulation_steps=config.accumulation_steps,
-            show_progress_bar=config.show_progress_bar,
-            log_steps=config.log_steps,
-            shuffle_buffer_size=config.shuffle_buffer_size,
-            batch_size=config.batch_size,
-            num_workers=config.num_workers,
-            prefetch_factor=config.prefetch_factor,
-            seed=config.seed,
-            deterministic=config.deterministic,
-        )
+            # Fit model
+            model.fit(
+                train_iterator=train_data,
+                valid_iterator=valid_data,
+                save_best_model=config.save_best_model,
+                output_path=config.output_path,
+                use_amp=config.use_amp,
+                epochs=config.epochs,
+                accumulation_steps=config.accumulation_steps,
+                show_progress_bar=config.show_progress_bar,
+                log_steps=config.log_steps,
+                shuffle_buffer_size=config.shuffle_buffer_size,
+                batch_size=config.batch_size,
+                num_workers=config.num_workers,
+                prefetch_factor=config.prefetch_factor,
+                seed=config.seed,
+                deterministic=config.deterministic,
+            )
+        else:
+            raise Exception("Specify one of the options from --config or --print_config")
 
     def eval(self, config):
         config = FitConfig.parse_file(config)
