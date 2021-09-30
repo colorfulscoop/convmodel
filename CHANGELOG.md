@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `save_best_model`: when given with output_path, fit will only save the best model in `output_path`
 - `min_new_tokens` option to `generate` method. https://github.com/colorfulscoop/convmodel/pull/16
 - eval method in model and cli. https://github.com/colorfulscoop/convmodel/pull/14
+- `print_config` option to `fit` cli command. https://github.com/colorfulscoop/convmodel/pull/18
 
 ### Changed
 
