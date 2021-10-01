@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.0]
+
 ### Added
 
 - `output_path` and `save_best_model` parameters to `fit` method. https://github.com/colorfulscoop/convmodel/pull/13
