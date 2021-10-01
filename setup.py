@@ -16,14 +16,14 @@ setuptools.setup(
         ],
         "test": ["pytest>=5.0,<60", "black>=20.8b1,<21"],
     },
-    version="0.2.0",
+    version="0.3.0",
     author="Colorful Scoop",
 
     # Description info
     url="https://github.com/colorfulscoop/convmodel",
     description=(
         "convmodel provides a conversation model"
-        " based on GPT-2."
+        " based on decoders models."
     ),
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
