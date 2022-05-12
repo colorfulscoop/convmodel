@@ -63,6 +63,35 @@ def test_iter():
     assert got == want
 
 
+def test_iter_max_len():
+    corpus = [
+        Ex(conversation=["こんにちは"]),
+        Ex(conversation=["こんにちは", "私は誰誰です"]),
+    ]
+    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
+    dataset = ConversationDataset(
+        iterator=corpus,
+        tokenizer=tokenizer,
+        max_len=7,
+    )
+    got = list(iter(dataset))
+    want = [
+        {
+            'input_ids': [5, 10272, 15, 679, 9, 5],
+            'token_type_ids': [0, 0, 0, 0, 0, 1],
+            'attention_mask': [1, 1, 1, 1, 1, 1],
+            "labels": [5, 10272, 15, 679, 9, 5]
+        },
+        {
+            'input_ids': [5, 10272, 15, 679, 9, 5, 5598],
+            'token_type_ids': [0, 0, 0, 0, 0, 1, 1],
+            'attention_mask': [1, 1, 1, 1, 1, 1, 1],
+            "labels": [5, 10272, 15, 679, 9, 5, 5598]
+        },
+    ]
+    assert got == want
+
+
 def test_build_data_loader():
     corpus = [
         Ex(conversation=["こんにちは"]),

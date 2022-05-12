@@ -4,10 +4,20 @@ from convmodel.data import BufferedShuffleDataset
 
 
 class ConversationDataset(torch.utils.data.IterableDataset):
-    def __init__(self, iterator, tokenizer: ConversationTokenizer):
+    def __init__(
+        self,
+        iterator,
+        tokenizer: ConversationTokenizer,
+        max_len: int=None
+    ):
+        """
+        Args:
+            max_len: max length of a tensor input to a model
+        """
         super().__init__()
         self._iterator = iterator
         self._tokenizer = tokenizer
+        self._max_len = max_len
 
     def __iter__(self):
         """
@@ -16,6 +26,11 @@ class ConversationDataset(torch.utils.data.IterableDataset):
         for example in self._iterator:
             model_input = self._tokenizer(example.conversation)
             model_input["labels"] = model_input["input_ids"]
+
+            if self._max_len is not None:
+                for key, val in model_input.items():
+                    model_input[key] = val[:self._max_len]
+
             yield model_input
 
     @classmethod
