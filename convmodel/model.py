@@ -152,6 +152,7 @@ class ConversationModel:
         train_dataloader = ConversationDataset(
             iterator=train_iterator,
             tokenizer=self._tokenizer,
+            max_len=model.config.n_positions,
         ).build_data_loader(
             shuffle_buffer_size=shuffle_buffer_size,
             batch_size=batch_size,
@@ -162,6 +163,7 @@ class ConversationModel:
         valid_dataloader = ConversationDataset(
             iterator=valid_iterator,
             tokenizer=self._tokenizer,
+            max_len=model.config.n_positions,
         ).build_data_loader(
             # Do NOT need to shuffle validation data
             shuffle_buffer_size=None,
@@ -269,6 +271,7 @@ class ConversationModel:
         eval_dataloader = ConversationDataset(
             iterator=eval_iterator,
             tokenizer=self._tokenizer,
+            max_len=model.config.n_positions,
         ).build_data_loader(
             shuffle_buffer_size=None,
             batch_size=batch_size,
