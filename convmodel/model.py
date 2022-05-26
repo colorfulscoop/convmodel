@@ -124,6 +124,7 @@ class ConversationModel:
         prefetch_factor: int = 2,
         seed: Optional[int] = None,
         deterministic: bool = False,
+        max_len: Optional[int] = None,
     ):
         """fit method enables train this model based on given train_iterator.
 
@@ -152,7 +153,7 @@ class ConversationModel:
         train_dataloader = ConversationDataset(
             iterator=train_iterator,
             tokenizer=self._tokenizer,
-            max_len=model.config.n_positions,
+            max_len=model.config.n_positions if max_len is None else max_len,
         ).build_data_loader(
             shuffle_buffer_size=shuffle_buffer_size,
             batch_size=batch_size,
@@ -163,7 +164,7 @@ class ConversationModel:
         valid_dataloader = ConversationDataset(
             iterator=valid_iterator,
             tokenizer=self._tokenizer,
-            max_len=model.config.n_positions,
+            max_len=model.config.n_positions if max_len is None else max_len,
         ).build_data_loader(
             # Do NOT need to shuffle validation data
             shuffle_buffer_size=None,
@@ -263,7 +264,8 @@ class ConversationModel:
         eval_iterator,
         batch_size: int=1,
         num_workers: int=0,
-        prefetch_factor: int=2
+        prefetch_factor: int=2,
+        max_len: Optional[int] = None,
     ):
         model = self._hf_model
         model.eval()
@@ -271,7 +273,7 @@ class ConversationModel:
         eval_dataloader = ConversationDataset(
             iterator=eval_iterator,
             tokenizer=self._tokenizer,
-            max_len=model.config.n_positions,
+            max_len=model.config.n_positions if max_len is None else max_len,
         ).build_data_loader(
             shuffle_buffer_size=None,
             batch_size=batch_size,

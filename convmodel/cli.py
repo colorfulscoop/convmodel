@@ -39,6 +39,7 @@ class FitConfig(BaseModel):
     prefetch_factor: int = 2
     seed: Optional[int] = None
     deterministic: bool = False
+    max_len: Optional[int] = None
 
 
 class CliEntrypoint:
@@ -88,6 +89,7 @@ class CliEntrypoint:
                 prefetch_factor=config.prefetch_factor,
                 seed=config.seed,
                 deterministic=config.deterministic,
+                max_len=config.max_len,
             )
         else:
             raise Exception("Specify one of the options from --config or --print_config")
@@ -105,5 +107,6 @@ class CliEntrypoint:
             eval_iterator=eval_data,
             batch_size=config.batch_size,
             num_workers=config.num_workers,
-            prefetch_factor=config.prefetch_factor
+            prefetch_factor=config.prefetch_factor,
+            max_len=config.max_len,
         )
