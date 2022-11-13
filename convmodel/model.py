@@ -98,12 +98,7 @@ class ConversationModel:
         deterministic: bool = False,
         max_len: Optional[int] = None,
     ):
-        """fit method enables train this model based on given train_iterator.
-
-        Args:
-            train_iterator (Iterator[ConversationExample]): iterator to use in training.
-
-        """
+        """fit method enables train this model based on given train_iterator."""
         # Parameter assertion
         if save_best_model:
             assert output_path, f"Set output_path when you set save_best_model to True"

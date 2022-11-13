@@ -1,4 +1,3 @@
-#from convmodel import ConversationExample
 from typing import Optional
 from pkg_resources import resource_filename
 from pydantic import BaseModel
