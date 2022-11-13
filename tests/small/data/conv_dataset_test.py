@@ -1,5 +1,6 @@
 from convmodel.models.gpt2lm.dataset import LMDataset as Dataset
 from convmodel.tokenizer import ConversationTokenizer
+import datasets
 
 
 class TokenizerMock:
@@ -17,11 +18,11 @@ class TokenizerMock:
 
 
 def test_iter():
-    corpus = [
+    corpus = datasets.Dataset.from_list([
         {"turns": ["こんにちは"]},
         {"turns": ["こんにちは", "私は誰誰です"]},
         {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
-    ]
+    ])
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     dataset = Dataset(
         iterator=corpus,
@@ -63,10 +64,10 @@ def test_iter():
 
 
 def test_iter_max_len():
-    corpus = [
+    corpus = datasets.Dataset.from_list([
         {"turns": ["こんにちは"]},
         {"turns": ["こんにちは", "私は誰誰です"]},
-    ]
+    ])
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     dataset = Dataset(
         iterator=corpus,
@@ -92,11 +93,11 @@ def test_iter_max_len():
 
 
 def test_build_data_loader():
-    corpus = [
+    corpus = datasets.Dataset.from_list([
         {"turns": ["こんにちは"]},
         {"turns": ["こんにちは", "私は誰誰です"]},
         {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
-    ]
+    ])
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     dataset = Dataset(
         iterator=corpus,
