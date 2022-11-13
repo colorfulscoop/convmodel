@@ -7,6 +7,7 @@ setuptools.setup(
     install_requires=[
         "pydantic>=1,<2",
         "transformers>=4.8.2,<5",
+        "datasets>=2.4.0",
         "sentencepiece>=0.1.95,<0.2",
         "fire>=0.4.0,<0.5",
     ],

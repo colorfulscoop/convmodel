@@ -3,7 +3,7 @@ from convmodel.tokenizer import ConversationTokenizer
 from convmodel.data import BufferedShuffleDataset
 
 
-class ConversationDataset(torch.utils.data.IterableDataset):
+class LMDataset(torch.utils.data.IterableDataset):
     def __init__(
         self,
         iterator,

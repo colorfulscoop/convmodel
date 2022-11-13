@@ -12,7 +12,3 @@ try:
 except ImportError:
     # This import will succeed with PyTroch == 1.8
     from torch.utils.data import BufferedShuffleDataset
-
-from .conv_dataset import ConversationDataset
-from .training import ConversationExample
-from .training import ConversationExampleError

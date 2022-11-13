@@ -1,29 +1,37 @@
-from convmodel import ConversationModel
-from convmodel import ConversationExample
+#from convmodel import ConversationExample
 from typing import Optional
 from pkg_resources import resource_filename
 from pydantic import BaseModel
 import subprocess
-import json
+#import json
+from datasets import load_dataset
 
 
-class JsonLinesIterator:
-    """Json Lines data loader used in fit command"""
-    def __init__(self, filename: str):
-        self._filename = filename
+def load_module(name: str):
+    components = name.split(".")
+    mod = __import__(".".join(components[:-1]), fromlist=[components[-1]])
+    return getattr(mod, components[-1])
 
-    def __iter__(self):
-        with open(self._filename) as fd:
-            for line in fd:
-                yield ConversationExample(conversation=json.loads(line))
+
+# class JsonLinesIterator:
+#     """Json Lines data loader used in fit command"""
+#     def __init__(self, filename: str):
+#         self._filename = filename
+# 
+#     def __iter__(self):
+#         with open(self._filename) as fd:
+#             for line in fd:
+#                 yield ConversationExample(conversation=json.loads(line))
 
 
 class FitConfig(BaseModel):
+    model_class: str
     pretrained_model_or_path: str
     output_path: str
-    train_file: str
-    valid_file: str
-    eval_file: Optional[str] = None
+    dataset_path: str
+    # train_file: str
+    # valid_file: str
+    # eval_file: Optional[str] = None
     save_best_model: bool = False
     device: Optional[str] = None
     lr: float = 1e-4
@@ -66,11 +74,13 @@ class CliEntrypoint:
         elif config:
             config = FitConfig.parse_file(config)
             # Prepare model
-            model = ConversationModel.from_pretrained(config.pretrained_model_or_path, device=config.device)
+            model_class = load_module(config.model_class)
+            print(f"Use {model_class.__name__} for training")
+            model = model_class.from_pretrained(config.pretrained_model_or_path, device=config.device)
 
             # Prepare data
-            train_data = JsonLinesIterator(config.train_file)
-            valid_data = JsonLinesIterator(config.valid_file)
+            train_data = load_dataset(config.dataset_path, split="train", streaming=True)
+            valid_data = load_dataset(config.dataset_path, split="validation", streaming=True)
 
             # Fit model
             model.fit(
@@ -97,10 +107,11 @@ class CliEntrypoint:
     def eval(self, config):
         config = FitConfig.parse_file(config)
         # Prepare model
-        model = ConversationModel.from_pretrained(config.pretrained_model_or_path, device=config.device)
+        model_class = load_module(config.model_class)
+        model = model_class.from_pretrained(config.pretrained_model_or_path, device=config.device)
 
         # Prepare data
-        eval_data = JsonLinesIterator(config.eval_file)
+        eval_data = load_dataset(config.eval_file, split="test", stream=True)
 
         # Fit model
         model.eval(
