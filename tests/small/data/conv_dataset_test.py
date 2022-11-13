@@ -1,5 +1,4 @@
-from convmodel.data import ConversationDataset
-from convmodel.data import ConversationExample as Ex
+from convmodel.models.gpt2lm.dataset import LMDataset as Dataset
 from convmodel.tokenizer import ConversationTokenizer
 
 
@@ -19,12 +18,12 @@ class TokenizerMock:
 
 def test_iter():
     corpus = [
-        Ex(conversation=["こんにちは"]),
-        Ex(conversation=["こんにちは", "私は誰誰です"]),
-        Ex(conversation=["こんにちは", "私は誰誰です", "おはようございます"]),
+        {"turns": ["こんにちは"]},
+        {"turns": ["こんにちは", "私は誰誰です"]},
+        {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
     ]
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
-    dataset = ConversationDataset(
+    dataset = Dataset(
         iterator=corpus,
         tokenizer=tokenizer,
     )
@@ -65,11 +64,11 @@ def test_iter():
 
 def test_iter_max_len():
     corpus = [
-        Ex(conversation=["こんにちは"]),
-        Ex(conversation=["こんにちは", "私は誰誰です"]),
+        {"turns": ["こんにちは"]},
+        {"turns": ["こんにちは", "私は誰誰です"]},
     ]
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
-    dataset = ConversationDataset(
+    dataset = Dataset(
         iterator=corpus,
         tokenizer=tokenizer,
         max_len=7,
@@ -94,12 +93,12 @@ def test_iter_max_len():
 
 def test_build_data_loader():
     corpus = [
-        Ex(conversation=["こんにちは"]),
-        Ex(conversation=["こんにちは", "私は誰誰です"]),
-        Ex(conversation=["こんにちは", "私は誰誰です", "おはようございます"]),
+        {"turns": ["こんにちは"]},
+        {"turns": ["こんにちは", "私は誰誰です"]},
+        {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
     ]
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
-    dataset = ConversationDataset(
+    dataset = Dataset(
         iterator=corpus,
         tokenizer=tokenizer,
     )
