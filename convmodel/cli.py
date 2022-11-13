@@ -13,17 +13,6 @@ def load_module(name: str):
     return getattr(mod, components[-1])
 
 
-# class JsonLinesIterator:
-#     """Json Lines data loader used in fit command"""
-#     def __init__(self, filename: str):
-#         self._filename = filename
-# 
-#     def __iter__(self):
-#         with open(self._filename) as fd:
-#             for line in fd:
-#                 yield ConversationExample(conversation=json.loads(line))
-
-
 class FitConfig(BaseModel):
     model_class: str
     pretrained_model_or_path: str

@@ -4,7 +4,7 @@ import random
 from datasets import interleave_datasets
 
 
-class LMWithClassificationDataset:  #torch.utils.data.IterableDataset):
+class LMWithClassificationDataset:
     def __init__(
         self,
         iterator,
@@ -15,7 +15,6 @@ class LMWithClassificationDataset:  #torch.utils.data.IterableDataset):
         Args:
             max_len: max length of a tensor input to a model
         """
-        #super().__init__()
         self._iterator = iterator
         self._tokenizer = tokenizer
         self._max_len = max_len
