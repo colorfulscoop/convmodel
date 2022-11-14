@@ -43,18 +43,21 @@ class LMDataset(torch.utils.data.IterableDataset):
         }
         return dic
 
+    def build_dataset(self):
+        dataset = self._iterator
+        # Prepare model input
+        dataset = dataset.map(self._tokenize, batched=False)
+        dataset = dataset.remove_columns("turns")
+        return dataset
+
     def build_data_loader(self, shuffle_buffer_size=None, batch_size=1,
                           num_workers=0, prefetch_factor=2):
         """build_data_loader builds DataLoader based on Dataset"""
-        dataset = self._iterator
+        dataset = self.build_dataset()
 
         # Shuffle dataset
         if shuffle_buffer_size:
             dataset = dataset.shuffle(buffer_size=shuffle_buffer_size)
-
-        # Prepare model input
-        dataset = dataset.map(self._tokenize, batched=False)
-        dataset = dataset.remove_columns("turns")
 
         # Convert to PyTorch format
         dataset = dataset.with_format("torch")

@@ -28,7 +28,7 @@ def test_iter():
         iterator=corpus,
         tokenizer=tokenizer,
     )
-    got = list(iter(dataset))
+    got = list(dataset.build_dataset())
     want = [
         {
             'input_ids': [5, 10272, 15, 679, 9, 5],
@@ -74,7 +74,7 @@ def test_iter_max_len():
         tokenizer=tokenizer,
         max_len=7,
     )
-    got = list(iter(dataset))
+    got = list(dataset.build_dataset())
     want = [
         {
             'input_ids': [5, 10272, 15, 679, 9, 5],
