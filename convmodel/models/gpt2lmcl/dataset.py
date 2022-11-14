@@ -65,10 +65,10 @@ class LMWithClassificationDataset:
                      for x in item])
         return dic
 
-    def _shuffle_last_utterance(self, batch):
+    def _shuffle_last_utterance(self, batch, shuffle_func):
         turns = batch["turns"]
         last_turns = [turn[-1] for turn in turns]
-        random.shuffle(last_turns)
+        shuffle_func(last_turns)
 
         return {
             "turns": [
@@ -78,20 +78,31 @@ class LMWithClassificationDataset:
             "cl_labels": [0] * len(turns)
         }
 
-    def build_data_loader(self, shuffle_buffer_size=None, batch_size=1,
-                          num_workers=0, prefetch_factor=2):
-        """build_data_loader builds DataLoader based on Dataset"""
-
+    def build_dataset(self, batch_size=1000, shuffle_func=random.shuffle):
         pos = self._iterator.map(lambda item: {"cl_labels": 1}, batched=False)
         # Need to parametrize batch_size
-        neg = self._iterator.map(self._shuffle_last_utterance, batched=True, batch_size=1000)
+        neg = self._iterator.map(
+            lambda batch: self._shuffle_last_utterance(batch, shuffle_func=shuffle_func),
+            batched=True,
+            batch_size=batch_size
+        )
         dataset = interleave_datasets([pos, neg])
+        dataset = dataset.map(self._tokenize, batched=False)
+        dataset = dataset.remove_columns("turns")
+        return dataset
+
+    def build_data_loader(self, shuffle_buffer_size=None, batch_size=1,
+                          num_workers=0, prefetch_factor=2,
+                          neg_shuffle_batch_size=1000,
+                          neg_shuffle_func=random.shuffle,
+                          ):
+        """build_data_loader builds DataLoader based on Dataset"""
+
+        dataset = self.build_dataset(batch_size=neg_shuffle_batch_size,
+                                     shuffle_func=neg_shuffle_func)
 
         if shuffle_buffer_size:
             dataset = dataset.shuffle(buffer_size=shuffle_buffer_size)
-
-        dataset = dataset.map(self._tokenize, batched=False)
-        dataset = dataset.remove_columns("turns")
 
         # Need to call with_format to avoid error `IterableDataset’ has no len()
         # https://discuss.huggingface.co/t/using-iterabledataset-with-trainer-iterabledataset-has-no-len/15790
