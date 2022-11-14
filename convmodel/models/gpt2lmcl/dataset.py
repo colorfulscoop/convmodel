@@ -95,6 +95,11 @@ class LMWithClassificationDataset:
 
         # Need to call with_format to avoid error `IterableDataset’ has no len()
         # https://discuss.huggingface.co/t/using-iterabledataset-with-trainer-iterabledataset-has-no-len/15790
+        #
+        # Note:
+        #   When dataset is IterableDataset (like this function), with_fomrat method does not convert list to torch.tensor.it keeps it as is.
+        #   However, when dataset is Dataset (not iterable), with_format convert list to torch.tensor.
+        #   This may be a bug of datasets
         dataset = dataset.with_format("torch")
 
         loader = torch.utils.data.DataLoader(

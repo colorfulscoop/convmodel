@@ -18,7 +18,7 @@ class TokenizerMock:
 
 
 def test_iter():
-    corpus = datasets.Dataset.from_list([
+    corpus = datasets.IterableDataset.from_generator(lambda: [
         {"turns": ["こんにちは"]},
         {"turns": ["こんにちは", "私は誰誰です"]},
         {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
@@ -64,7 +64,7 @@ def test_iter():
 
 
 def test_iter_max_len():
-    corpus = datasets.Dataset.from_list([
+    corpus = datasets.IterableDataset.from_generator(lambda: [
         {"turns": ["こんにちは"]},
         {"turns": ["こんにちは", "私は誰誰です"]},
     ])
@@ -93,7 +93,7 @@ def test_iter_max_len():
 
 
 def test_build_data_loader():
-    corpus = datasets.Dataset.from_list([
+    corpus = datasets.IterableDataset.from_generator(lambda: [
         {"turns": ["こんにちは"]},
         {"turns": ["こんにちは", "私は誰誰です"]},
         {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
