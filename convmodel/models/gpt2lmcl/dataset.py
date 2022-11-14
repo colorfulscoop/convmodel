@@ -86,10 +86,10 @@ class LMWithClassificationDataset:
             batched=True,
             batch_size=batch_size
         )
-        dataset = interleave_datasets([pos, neg])
+        dataset = interleave_datasets([pos, neg], stopping_strategy="all_exhausted")
         dataset = dataset.map(self._tokenize, batched=False)
         dataset = dataset.remove_columns("turns")
-        return dataset
+        return dataset, pos, neg
 
     def build_data_loader(self, shuffle_buffer_size=None, batch_size=1,
                           num_workers=0, prefetch_factor=2,
