@@ -96,4 +96,4 @@ def test_build_data_loader():
     )
     loader = dataset.build_data_loader(batch_size=2)
 
-    assert [item["input_ids"].shape[0] for item in loader] == [2, 1]
+    assert [item["input_ids"].shape[0] for item in loader] == [2, 2]
