@@ -84,47 +84,16 @@ def test_iter():
     assert got == want
 
 
-#def test_iter_max_len():
-#    corpus = datasets.IterableDataset.from_generator(lambda: [
-#        {"turns": ["こんにちは"]},
-#        {"turns": ["こんにちは", "私は誰誰です"]},
-#    ])
-#    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
-#    dataset = Dataset(
-#        iterator=corpus,
-#        tokenizer=tokenizer,
-#        max_len=7,
-#    )
-#    got = list(dataset.build_dataset())
-#    want = [
-#        {
-#            'input_ids': [5, 10272, 15, 679, 9, 5],
-#            'token_type_ids': [0, 0, 0, 0, 0, 1],
-#            'attention_mask': [1, 1, 1, 1, 1, 1],
-#            "labels": [5, 10272, 15, 679, 9, 5]
-#        },
-#        {
-#            'input_ids': [5, 10272, 15, 679, 9, 5, 5598],
-#            'token_type_ids': [0, 0, 0, 0, 0, 1, 1],
-#            'attention_mask': [1, 1, 1, 1, 1, 1, 1],
-#            "labels": [5, 10272, 15, 679, 9, 5, 5598]
-#        },
-#    ]
-#    assert got == want
-#
-#
-#def test_build_data_loader():
-#    corpus = datasets.IterableDataset.from_generator(lambda: [
-#        {"turns": ["こんにちは"]},
-#        {"turns": ["こんにちは", "私は誰誰です"]},
-#        {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
-#    ])
-#    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
-#    dataset = Dataset(
-#        iterator=corpus,
-#        tokenizer=tokenizer,
-#    )
-#    loader = dataset.build_data_loader(batch_size=2)
-#
-#    assert [item["input_ids"].shape[0] for item in loader] == [2, 1]
-#
+def test_build_data_loader():
+    corpus = datasets.IterableDataset.from_generator(lambda: [
+        {"turns": ["こんにちは", "私は誰誰です"]},
+        {"turns": ["こんにちは", "私は誰誰です", "おはようございます"]},
+    ])
+    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
+    dataset = Dataset(
+        iterator=corpus,
+        tokenizer=tokenizer,
+    )
+    loader = dataset.build_data_loader(batch_size=2)
+
+    assert [item["input_ids"].shape[0] for item in loader] == [2, 1]
