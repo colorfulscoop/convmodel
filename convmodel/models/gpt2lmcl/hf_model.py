@@ -22,8 +22,6 @@ class GPT2LMHeadWithClassificationOutput(ModelOutput):
 
 class GPT2LMHeadWithClassification(GPT2LMHeadModel):
     """
-    Original code comes from
-    https://github.com/huggingface/transformers/blob/f0d496828d3da3bf1e3c8fbed394d7847e839fa6/src/transformers/models/gpt2/modeling_gpt2.py#L1340
     """
     def __init__(self, config):
         super().__init__(config)
