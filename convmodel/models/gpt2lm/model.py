@@ -29,7 +29,7 @@ class GPT2LMConversationModel(ConversationModel):
         model_input = self._tokenizer(context)
 
         # Convert to Torch tensor
-        model_input = {key: torch.tensor([val]) for key, val in model_input.items()}
+        model_input = {key: torch.tensor([val]).to(self.device) for key, val in model_input.items()}
 
         #
         # New parameter implementation of `min_new_tokens`

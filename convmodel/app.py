@@ -1,5 +1,5 @@
 import streamlit as st
-from convmodel.models.gpt2lmcl.model import GPT2LMWithClassificationConversationModel as ConversationModel
+from convmodel.models.gpt2lm.model import GPT2LMConversationModel as ConversationModel
 
 
 st.set_page_config(
@@ -48,6 +48,8 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 model_dir = st.sidebar.text_input('Model path', "model")
+do_sample = st.sidebar.checkbox('do_sample', value=True)
+penalty_alpha = st.sidebar.number_input('penalty_alpha', value=0.6)
 top_p = st.sidebar.number_input('top_p', value=0.95)
 top_k = st.sidebar.number_input('top_k', value=50)
 # max_length = st.sidebar.number_input('Max # of tokens to input to the model', value=1024)
@@ -106,7 +108,7 @@ if (not reset_button) and user_input:
     with st.spinner(text="(・ω・ ).oO(thinking...)"):
         gen = model.generate(
             context=st.session_state.context,
-            do_sample=True,
+            do_sample=do_sample,
             top_p=top_p,
             top_k=top_k,
             # max_length=max_length,
@@ -116,6 +118,7 @@ if (not reset_button) and user_input:
             no_repeat_ngram_size=no_repeat_ngram_size,
             bad_words_ids=[[model.hf_tokenizer.unk_token_id]],
             num_return_sequences=num_return_sequences,
+            penalty_alpha=penalty_alpha,
         )
         res = gen.responses[0]
         st.session_state.context.append(res)
