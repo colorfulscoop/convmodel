@@ -4,12 +4,12 @@ jobs:
   test-small:
     runs-on: ubuntu-18.04
     container:
-      image: python:3.6.13-slim-buster
+      image: python:3.10.8-slim-buster
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Install dependencies
-        run: pip install .[test] "torch>=1.8,<1.9"
+        run: pip install .[test] "torch>=1.13.0"
       - name: Run small size tests
         run: |
           pytest -v tests/small

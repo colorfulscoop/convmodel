@@ -1,9 +1,8 @@
 import torch
 from convmodel.tokenizer import ConversationTokenizer
-from convmodel.data import BufferedShuffleDataset
 
 
-class ConversationDataset(torch.utils.data.IterableDataset):
+class LMDataset(torch.utils.data.IterableDataset):
     def __init__(
         self,
         iterator,
@@ -19,19 +18,14 @@ class ConversationDataset(torch.utils.data.IterableDataset):
         self._tokenizer = tokenizer
         self._max_len = max_len
 
-    def __iter__(self):
-        """
-            Yields (List[int])
-        """
-        for example in self._iterator:
-            model_input = self._tokenizer(example.conversation)
-            model_input["labels"] = model_input["input_ids"]
+    def _tokenize(self, sample):
+        model_input = self._tokenizer(sample["turns"])
+        model_input["labels"] = model_input["input_ids"]
+        if self._max_len is not None:
+            for key, val in model_input.items():
+                model_input[key] = val[:self._max_len]
 
-            if self._max_len is not None:
-                for key, val in model_input.items():
-                    model_input[key] = val[:self._max_len]
-
-            yield model_input
+        return model_input
 
     @classmethod
     def collate_fn(cls, item):
@@ -49,12 +43,24 @@ class ConversationDataset(torch.utils.data.IterableDataset):
         }
         return dic
 
+    def build_dataset(self):
+        dataset = self._iterator
+        # Prepare model input
+        dataset = dataset.map(self._tokenize, batched=False)
+        dataset = dataset.remove_columns("turns")
+        return dataset
+
     def build_data_loader(self, shuffle_buffer_size=None, batch_size=1,
                           num_workers=0, prefetch_factor=2):
         """build_data_loader builds DataLoader based on Dataset"""
-        dataset = self
+        dataset = self.build_dataset()
+
+        # Shuffle dataset
         if shuffle_buffer_size:
-            dataset = BufferedShuffleDataset(dataset, buffer_size=shuffle_buffer_size)
+            dataset = dataset.shuffle(buffer_size=shuffle_buffer_size)
+
+        # Convert to PyTorch format
+        dataset = dataset.with_format("torch")
 
         loader = torch.utils.data.DataLoader(
             dataset=dataset,
