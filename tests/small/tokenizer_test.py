@@ -2,7 +2,7 @@ from convmodel.tokenizer import ConversationTokenizer
 
 
 class TokenizerMock:
-    def __init__(self, init_sep_token=True):
+    def __init__(self, init_sep_token=True, add_special_tokens=True):
         if init_sep_token:
             # Emulate sep_token is defined in tokenizer
             self._sep_token = "<sep>"
@@ -11,6 +11,9 @@ class TokenizerMock:
             # Emulate sep_token is not defined
             self._sep_token = None
             self._sep_token_id = None
+
+        self._add_special_tokens = add_special_tokens
+        self._eos_token_id = 2
 
     @property
     def sep_token_id(self):
@@ -31,7 +34,14 @@ class TokenizerMock:
             "私は誰誰です": [5598, 5885, 5885, 2282],
             "おはようございます": [25373, 939, 13092, 2633]
         }
-        return encode_map[text]
+        ids = encode_map[text]
+
+        # Assume this tokenizer adds end symbol at the end of the sentence
+        # when add_special_tokens is set to True
+        if self._add_special_tokens:
+            ids = ids + [self._eos_token_id]
+
+        return ids
 
 
 def test_tokenizer_encode():

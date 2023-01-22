@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add max_len option in Dataset to restrict the max length of a tensor inputting to a model https://github.com/colorfulscoop/convmodel/pull/20
 - Revise code structure https://github.com/colorfulscoop/convmodel/pull/22
+- Fix two issues in https://github.com/colorfulscoop/convmodel/pull/23
+  - Responses include EOS at the end of the utterance.
+  - Tokenizer adds special tokens if the tokenizer adds them as default.
 
 ## [v0.3.0]
 
