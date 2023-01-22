@@ -49,7 +49,7 @@ class GPT2LMConversationModel(ConversationModel):
             min_length=min_length,
         )
 
-        responses = [self._tokenizer.decode(item) for item in output[:, model_input["input_ids"].shape[-1]:]]
+        responses = [self._tokenizer.decode(item) for item in output[:, model_input["input_ids"].shape[-1]:-1]]
 
         return ConversationModelOutput(
             responses=responses,
