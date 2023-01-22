@@ -48,6 +48,15 @@ def test_tokenizer_encode():
     text = "こんにちは"
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     got = tokenizer.encode(text)
+    want = [10272, 15, 679, 9, 2]
+
+    assert got == want
+
+
+def test_tokenizer_encode_disable_add_special_tokens():
+    text = "こんにちは"
+    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock(), add_special_tokens=False)
+    got = tokenizer.encode(text)
     want = [10272, 15, 679, 9]
 
     assert got == want
