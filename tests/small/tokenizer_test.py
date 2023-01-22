@@ -25,19 +25,36 @@ class TokenizerMock:
         self._sep_token = val
         self._sep_token_id = 5
 
-    def encode(self, text):
+    def encode(self, text, add_special_tokens=True):
         encode_map = {
             "こんにちは": [10272, 15, 679, 9],
             "私は誰誰です": [5598, 5885, 5885, 2282],
             "おはようございます": [25373, 939, 13092, 2633]
         }
-        return encode_map[text]
+        ids = encode_map[text]
+
+        # Assume this tokenizer adds end symbol at the end of the sentence
+        # when add_special_tokens is set to True
+        if add_special_tokens:
+            eos_token_id = 2
+            ids = ids + [eos_token_id]
+
+        return ids
 
 
 def test_tokenizer_encode():
     text = "こんにちは"
     tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
     got = tokenizer.encode(text)
+    want = [10272, 15, 679, 9, 2]
+
+    assert got == want
+
+
+def test_tokenizer_encode_disable_add_special_tokens():
+    text = "こんにちは"
+    tokenizer = ConversationTokenizer(tokenizer=TokenizerMock())
+    got = tokenizer.encode(text, add_special_tokens=False)
     want = [10272, 15, 679, 9]
 
     assert got == want

@@ -51,7 +51,7 @@ class ConversationTokenizer:
         # - sep_token_id + t2
         # - sep_token_id
         input_ids_list = [
-            [self._tokenizer.sep_token_id] + self._tokenizer.encode(t)
+            [self._tokenizer.sep_token_id] + self._tokenizer.encode(t, add_special_tokens=False)
             for t in texts
         ]
         input_ids_list.append([self._tokenizer.sep_token_id])

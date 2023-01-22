@@ -1,20 +1,7 @@
 from convmodel.models.gpt2lm.dataset import LMDataset as Dataset
 from convmodel.tokenizer import ConversationTokenizer
 import datasets
-
-
-class TokenizerMock:
-    @property
-    def sep_token_id(self):
-        return 5
-
-    def encode(self, text):
-        encode_map = {
-            "こんにちは": [10272, 15, 679, 9],
-            "私は誰誰です": [5598, 5885, 5885, 2282],
-            "おはようございます": [25373, 939, 13092, 2633]
-        }
-        return encode_map[text]
+from ..tokenizer_test import TokenizerMock
 
 
 def test_iter():
