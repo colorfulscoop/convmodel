@@ -79,7 +79,7 @@ num_return_sequences = st.sidebar.number_input('Number of sentences generated', 
 # Load model
 try:
     model = load_model(model_dir)
-    st.success(f'Loaded a model from the model path "{model_dir}" :wink:')
+    st.success(f'Loaded a model from the model path "{model_dir}" :wink:', icon="✅")
     st.markdown('Input your message below and press Enter to start conversation :speech_balloon:')
 except OSError:
     st.warning(f'''
