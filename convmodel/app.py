@@ -1,6 +1,6 @@
 import streamlit as st
 from convmodel.models.gpt2lm.model import GPT2LMConversationModel as ConversationModel
-
+import os
 
 st.set_page_config(
     page_title="Try your convmodel",
@@ -31,6 +31,9 @@ if "text_input_key" not in st.session_state:
     st.session_state.text_input_key = 0
 
 
+# Get default value from environment variable
+MODEL_PATH = os.environ.get("MODEL_PATH", "model")
+
 #
 # Set sidebar
 #
@@ -47,7 +50,7 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True
 )
-model_dir = st.sidebar.text_input('Model path', "model")
+model_dir = st.sidebar.text_input('Model path', MODEL_PATH)
 do_sample = st.sidebar.checkbox('do_sample', value=True)
 penalty_alpha = st.sidebar.number_input('penalty_alpha', value=0.6)
 top_p = st.sidebar.number_input('top_p', value=0.95)

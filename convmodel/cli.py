@@ -88,6 +88,9 @@ class CliEntrypoint:
                 seed=config.seed,
                 deterministic=config.deterministic,
                 max_len=config.max_len,
+                optimizer_params={
+                    "lr": config.lr,
+                },
             )
         else:
             raise Exception("Specify one of the options from --config or --print_config")
