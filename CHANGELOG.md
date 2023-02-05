@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add max_len option in `fit` method https://github.com/colorfulscoop/convmodel/pull/21
+- Set default model path as a command line argument for `try` CLI https://github.com/colorfulscoop/convmodel/pull/24
 
 ### Fixed
 
