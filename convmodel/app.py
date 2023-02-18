@@ -1,6 +1,6 @@
 import streamlit as st
 from convmodel.models.gpt2lm.model import GPT2LMConversationModel as ConversationModel
-
+import os
 
 st.set_page_config(
     page_title="Try your convmodel",
@@ -31,42 +31,64 @@ if "text_input_key" not in st.session_state:
     st.session_state.text_input_key = 0
 
 
+# Get default value from environment variable
+MODEL_PATH = os.environ.get("MODEL_PATH", "model")
+
 #
 # Set sidebar
 #
 st.sidebar.markdown(
     """
-    # Try your model
+    # Try your convmodel
 
     <small>convmodel documents available on [docs](https://colorfulscoop.github.io/convmodel-docs/).</small>
 
     <small>Check [Text Generation](https://huggingface.co/docs/transformers/main/en/main_classes/text_generation) document
     for the parameters of text generation.</small>
 
-    ## Parameters
+    ## Model Path
     """,
     unsafe_allow_html=True
 )
-model_dir = st.sidebar.text_input('Model path', "model")
-do_sample = st.sidebar.checkbox('do_sample', value=True)
-penalty_alpha = st.sidebar.number_input('penalty_alpha', value=0.6)
-top_p = st.sidebar.number_input('top_p', value=0.95)
-top_k = st.sidebar.number_input('top_k', value=50)
+model_dir = st.sidebar.text_input('Model', MODEL_PATH)
+
+st.sidebar.markdown("## Text Generation Parameters", unsafe_allow_html=True)
+
+do_sample = st.sidebar.checkbox('do_sample', value=False)
+if do_sample:
+    penalty_alpha = st.sidebar.number_input('penalty_alpha', value=0)
+    top_p = st.sidebar.number_input('top_p', value=0.95)
+    top_k = st.sidebar.number_input('top_k', value=50)
+else:
+    # Use contrastive search
+    penalty_alpha = st.sidebar.number_input('penalty_alpha', value=0.6)
+    top_p = st.sidebar.number_input('top_p', value=1.0)
+    top_k = st.sidebar.number_input('top_k', value=4)
+
 # max_length = st.sidebar.number_input('Max # of tokens to input to the model', value=1024)
 min_new_tokens = st.sidebar.number_input('Min # of new tokens to generate', value=1)
 max_new_tokens = st.sidebar.number_input('Max # of new tokens to generate', value=30)
-num_beams = st.sidebar.number_input('# beams', value=1)
+num_beams = st.sidebar.number_input('Number of beams', value=1)
 no_repeat_ngram_size = st.sidebar.number_input('no_repeat_ngram_size', value=0)
-num_return_sequences = st.sidebar.number_input('# of sentences generated', value=1)
+num_return_sequences = st.sidebar.number_input('Number of sentences generated', value=1)
 
 #
 # Set main layout
 #
 
 # Load model
-model = load_model(model_dir)
-st.success(f'Loaded your model from the model path "{model_dir}" :wink:')
-st.markdown('Input your message below and press Enter to start conversation :speech_balloon:')
+try:
+    model = load_model(model_dir)
+    st.success(f'Loaded a model from the model path "{model_dir}" :wink:', icon="✅")
+    st.markdown('Input your message below and press Enter to start conversation :speech_balloon:')
+except OSError:
+    st.warning(f'''
+        Error happens while loading a model in "{model_dir}".
+
+        Check the model is located in the directory. Error details are below.
+    ''',
+    icon="⚠️")
+    raise
 #st.info('Input your message and press Enter.')
 
 # context area
